@@ -1,0 +1,41 @@
+{
+  "name": "biscuitcutter",
+  "version": "1.0.0",
+  "description": "A command-line utility that creates projects from project templates, e.g. creating a TypeScript package project from a project template.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "biscuitcutter": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "dev": "tsc --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "biscuitcutter",
+    "template",
+    "scaffolding",
+    "project-template",
+    "nunjucks"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3",
+    "fs-extra": "^11.3.4",
+    "inquirer": "^12.11.1",
+    "istextorbinary": "^9.5.0",
+    "nunjucks": "^3.2.4",
+    "slugify": "^1.6.6",
+    "typescript": "^5.9.3",
+    "yaml": "^2.8.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^25.3.5",
+    "@types/nunjucks": "^3.2.6"
+  }
+}
