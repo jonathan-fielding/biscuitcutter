@@ -52,8 +52,20 @@ export function registerDefaultExtensions(env: nunjucks.Environment): void {
   );
 
   // Now tag — provides current date formatting
-  env.addGlobal('now', (timezone?: string, format?: string) => {
-    const fmt = format || '%Y-%m-%d';
+  // Handles both positional args and Nunjucks keyword args (passed as object with __keywords: true)
+  env.addGlobal('now', (timezoneOrKwargs?: string | Record<string, any>, format?: string) => {
+    let fmt = '%Y-%m-%d';
+    
+    // Check if first arg is Nunjucks keyword arguments object
+    if (timezoneOrKwargs && typeof timezoneOrKwargs === 'object' && timezoneOrKwargs.__keywords) {
+      fmt = timezoneOrKwargs.format || fmt;
+    } else if (format) {
+      fmt = format;
+    } else if (typeof timezoneOrKwargs === 'string' && timezoneOrKwargs.startsWith('%')) {
+      // First positional arg looks like a format string
+      fmt = timezoneOrKwargs;
+    }
+    
     return strftime(fmt, new Date());
   });
 }

@@ -22,8 +22,23 @@ import {
   rmtree,
   workIn,
 } from './utils';
+import { registerDefaultExtensions } from './extensions';
 
 const logger = getLogger('biscuitcutter.generate');
+
+/**
+ * Check if an error is an undefined variable error from Nunjucks.
+ */
+function isUndefinedVariableError(err: any): boolean {
+  if (!err) return false;
+  // Nunjucks throws "Template render error" with message about null/undefined
+  if (err.name === 'Template render error') return true;
+  // Check for various undefined-related messages
+  if (err.message?.includes('not defined')) return true;
+  if (err.message?.includes('null or undefined')) return true;
+  if (err.message?.includes('undefined value')) return true;
+  return false;
+}
 
 /**
  * Check whether the given `filePath` should only be copied and not rendered.
@@ -378,7 +393,7 @@ export function generateFiles(
       overwriteIfExists,
     );
   } catch (err: any) {
-    if (err.message?.includes('not defined')) {
+    if (isUndefinedVariableError(err)) {
       throw new UndefinedVariableInTemplateError(
         `Unable to create project directory '${unrenderedDir}'`,
         err,
@@ -415,7 +430,6 @@ export function generateFiles(
     });
 
     // Register extensions on the render env too
-    const { registerDefaultExtensions } = require('./extensions');
     registerDefaultExtensions(renderEnv);
 
     // Walk the template directory
@@ -464,7 +478,7 @@ export function generateFiles(
             overwriteIfExists,
           );
         } catch (err: any) {
-          if (err.message?.includes('not defined')) {
+          if (isUndefinedVariableError(err)) {
             if (deleteProjectOnFailure) {
               rmtree(projectDir);
             }
@@ -496,7 +510,7 @@ export function generateFiles(
         try {
           generateFile(projectDir, infile, context!, renderEnv, skipIfFileExists);
         } catch (err: any) {
-          if (err.message?.includes('not defined')) {
+          if (isUndefinedVariableError(err)) {
             if (deleteProjectOnFailure) {
               rmtree(projectDir);
             }
