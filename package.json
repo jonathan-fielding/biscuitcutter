@@ -18,7 +18,8 @@
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublishOnly": "npm run build && npm test",
+    "changeset": "npx @changesets/cli"
   },
   "keywords": [
     "biscuitcutter",
