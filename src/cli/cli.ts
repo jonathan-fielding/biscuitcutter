@@ -6,7 +6,7 @@
 import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
-import { getUserConfig } from './config';
+import { getUserConfig } from '../config/config';
 import {
   ContextDecodingError,
   EmptyDirNameError,
@@ -18,9 +18,9 @@ import {
   RepositoryNotFoundError,
   UndefinedVariableInTemplateError,
   UnknownExtensionError,
-} from './exceptions';
-import { configureLogger } from './log';
-import { biscuitcutter } from './main';
+} from '../utils/exceptions';
+import { configureLogger } from '../utils/log';
+import { biscuitcutter } from '../core/main';
 
 const VERSION = '1.0.0';
 

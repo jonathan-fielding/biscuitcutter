@@ -6,13 +6,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as nunjucks from 'nunjucks';
 import * as fsExtra from 'fs-extra';
-import { getLogger } from './log';
+import { getLogger } from '../utils/log';
 import {
   ContextDecodingError,
   EmptyDirNameError,
   OutputDirExistsError,
   UndefinedVariableInTemplateError,
-} from './exceptions';
+} from '../utils/exceptions';
 import { findTemplate } from './find';
 import { runHookFromRepoDir } from './hooks';
 import { processYesNoResponse } from './prompt';
@@ -21,8 +21,8 @@ import {
   makeSurePathExists,
   rmtree,
   workIn,
-} from './utils';
-import { registerDefaultExtensions } from './extensions';
+} from '../utils/utils';
+import { registerDefaultExtensions } from '../template/extensions';
 
 const logger = getLogger('biscuitcutter.generate');
 

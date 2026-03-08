@@ -11,7 +11,7 @@ import {
   workIn,
   makeExecutable,
   createEnvWithContext,
-} from '../src/utils';
+} from '../../src/utils/utils';
 
 describe('rmtree', () => {
   it('should remove a directory and its contents', () => {

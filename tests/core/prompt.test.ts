@@ -6,9 +6,9 @@ import {
   renderVariable,
   promptForConfig,
   processYesNoResponse,
-} from '../src/prompt';
-import { createStrictEnvironment } from '../src/environment';
-import { UndefinedVariableInTemplateError } from '../src/exceptions';
+} from '../../src/core/prompt';
+import { createStrictEnvironment } from '../../src/template/environment';
+import { UndefinedVariableInTemplateError } from '../../src/utils/exceptions';
 
 describe('processYesNoResponse', () => {
   it.each(['1', 'true', 't', 'yes', 'y', 'on'])(
@@ -283,7 +283,7 @@ describe('promptForConfig', () => {
 
 describe('promptAndDelete', () => {
   it('should delete directory with no_input', async () => {
-    const { promptAndDelete } = await import('../src/prompt');
+    const { promptAndDelete } = await import('../../src/core/prompt');
     const tmpDir = fs.mkdtempSync(
       path.join(os.tmpdir(), 'biscuitcutter-prompt-del-'),
     );
@@ -294,7 +294,7 @@ describe('promptAndDelete', () => {
   });
 
   it('should delete file with no_input', async () => {
-    const { promptAndDelete } = await import('../src/prompt');
+    const { promptAndDelete } = await import('../../src/core/prompt');
     const tmpDir = fs.mkdtempSync(
       path.join(os.tmpdir(), 'biscuitcutter-prompt-del-'),
     );

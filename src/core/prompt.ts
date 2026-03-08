@@ -6,9 +6,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as readline from 'readline';
 import * as nunjucks from 'nunjucks';
-import { getLogger } from './log';
-import { UndefinedVariableInTemplateError } from './exceptions';
-import { createEnvWithContext, rmtree } from './utils';
+import { getLogger } from '../utils/log';
+import { UndefinedVariableInTemplateError } from '../utils/exceptions';
+import { createEnvWithContext, rmtree } from '../utils/utils';
 
 const logger = getLogger('biscuitcutter.prompt');
 

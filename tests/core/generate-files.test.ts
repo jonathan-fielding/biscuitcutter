@@ -5,16 +5,16 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { generateFiles, generateContext, renderAndCreateDir } from '../src/generate';
+import { generateFiles, generateContext, renderAndCreateDir } from '../../src/core/generate';
 import {
   NonTemplatedInputDirError,
   OutputDirExistsError,
   UndefinedVariableInTemplateError,
   EmptyDirNameError,
-} from '../src/exceptions';
-import { createStrictEnvironment } from '../src/environment';
+} from '../../src/utils/exceptions';
+import { createStrictEnvironment } from '../../src/template/environment';
 
-const TESTS_DIR = path.join(__dirname);
+const FIXTURES_DIR = path.join(__dirname, '../_fixtures');
 
 describe('generateFiles', () => {
   let tmpDir: string;
@@ -32,7 +32,7 @@ describe('generateFiles', () => {
   it('should throw NonTemplatedInputDirError for nontemplated repo', () => {
     expect(() =>
       generateFiles(
-        path.join(TESTS_DIR, 'test-generate-files-nontemplated'),
+        path.join(FIXTURES_DIR, 'test-generate-files-nontemplated'),
         { cookiecutter: { food: 'pizza' } },
         tmpDir,
       ),
@@ -41,7 +41,7 @@ describe('generateFiles', () => {
 
   it('should generate files with unicode context', () => {
     generateFiles(
-      path.join(TESTS_DIR, 'test-generate-files'),
+      path.join(FIXTURES_DIR, 'test-generate-files'),
       { cookiecutter: { food: 'pizzä' } },
       tmpDir,
     );
@@ -54,7 +54,7 @@ describe('generateFiles', () => {
 
   it('should generate files with linux newline', () => {
     generateFiles(
-      path.join(TESTS_DIR, 'test-generate-files'),
+      path.join(FIXTURES_DIR, 'test-generate-files'),
       { cookiecutter: { food: 'pizzä' } },
       tmpDir,
     );
@@ -67,7 +67,7 @@ describe('generateFiles', () => {
 
   it('should generate files from absolute path', () => {
     generateFiles(
-      path.resolve(path.join(TESTS_DIR, 'test-generate-files')),
+      path.resolve(path.join(FIXTURES_DIR, 'test-generate-files')),
       { cookiecutter: { food: 'pizzä' } },
       tmpDir,
     );
@@ -82,7 +82,7 @@ describe('generateFiles', () => {
     fs.mkdirSync(outputDir);
 
     const projectDir = generateFiles(
-      path.resolve(path.join(TESTS_DIR, 'test-generate-files')),
+      path.resolve(path.join(FIXTURES_DIR, 'test-generate-files')),
       { cookiecutter: { food: 'pizzä' } },
       outputDir,
     );
@@ -95,7 +95,7 @@ describe('generateFiles', () => {
 
   it('should preserve file permissions', () => {
     generateFiles(
-      path.join(TESTS_DIR, 'test-generate-files-permissions'),
+      path.join(FIXTURES_DIR, 'test-generate-files-permissions'),
       { cookiecutter: { permissions: 'permissions' } },
       tmpDir,
     );
@@ -107,13 +107,13 @@ describe('generateFiles', () => {
 
     // Check that source and output file permissions match
     const srcSimple = path.join(
-      TESTS_DIR,
+      FIXTURES_DIR,
       'test-generate-files-permissions',
       'input{{cookiecutter.permissions}}',
       'simple.txt',
     );
     const srcScript = path.join(
-      TESTS_DIR,
+      FIXTURES_DIR,
       'test-generate-files-permissions',
       'input{{cookiecutter.permissions}}',
       'script.sh',
@@ -129,7 +129,7 @@ describe('generateFiles', () => {
     fs.writeFileSync(simpleFile, 'temp');
 
     generateFiles(
-      path.join(TESTS_DIR, 'test-generate-files'),
+      path.join(FIXTURES_DIR, 'test-generate-files'),
       { cookiecutter: { food: 'pizzä' } },
       tmpDir,
       true,  // overwriteIfExists
@@ -148,7 +148,7 @@ describe('generateFiles', () => {
 
     expect(() =>
       generateFiles(
-        path.join(TESTS_DIR, 'test-generate-files'),
+        path.join(FIXTURES_DIR, 'test-generate-files'),
         { cookiecutter: { food: 'pizzä' } },
         tmpDir,
         false, // overwriteIfExists
@@ -167,7 +167,7 @@ describe('generateFiles', () => {
     fs.writeFileSync(simpleFile, 'temp');
 
     generateFiles(
-      path.join(TESTS_DIR, 'test-generate-files'),
+      path.join(FIXTURES_DIR, 'test-generate-files'),
       { cookiecutter: { food: 'pizzä' } },
       tmpDir,
       true, // overwriteIfExists
@@ -268,7 +268,7 @@ describe('UndefinedVariable Errors in generateFiles', () => {
   it('should raise error for undefined variable in file name', () => {
     expect(() =>
       generateFiles(
-        path.join(TESTS_DIR, 'undefined-variable', 'file-name'),
+        path.join(FIXTURES_DIR, 'undefined-variable', 'file-name'),
         undefinedContext,
         tmpDir,
       ),
@@ -282,7 +282,7 @@ describe('UndefinedVariable Errors in generateFiles', () => {
   it('should raise error for undefined variable in file content', () => {
     expect(() =>
       generateFiles(
-        path.join(TESTS_DIR, 'undefined-variable', 'file-content'),
+        path.join(FIXTURES_DIR, 'undefined-variable', 'file-content'),
         undefinedContext,
         tmpDir,
       ),
@@ -292,7 +292,7 @@ describe('UndefinedVariable Errors in generateFiles', () => {
   it('should raise error for undefined variable in dir name', () => {
     expect(() =>
       generateFiles(
-        path.join(TESTS_DIR, 'undefined-variable', 'dir-name'),
+        path.join(FIXTURES_DIR, 'undefined-variable', 'dir-name'),
         undefinedContext,
         tmpDir,
       ),
@@ -302,7 +302,7 @@ describe('UndefinedVariable Errors in generateFiles', () => {
   it('should keep project dir on failure when flag is set', () => {
     try {
       generateFiles(
-        path.join(TESTS_DIR, 'undefined-variable', 'dir-name'),
+        path.join(FIXTURES_DIR, 'undefined-variable', 'dir-name'),
         undefinedContext,
         tmpDir,
         false, // overwriteIfExists
@@ -321,7 +321,7 @@ describe('UndefinedVariable Errors in generateFiles', () => {
   it('should raise error for undefined project directory', () => {
     expect(() =>
       generateFiles(
-        path.join(TESTS_DIR, 'undefined-variable', 'dir-name'),
+        path.join(FIXTURES_DIR, 'undefined-variable', 'dir-name'),
         {},
         tmpDir,
       ),

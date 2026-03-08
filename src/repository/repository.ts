@@ -4,8 +4,8 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
-import { getLogger } from './log';
-import { RepositoryNotFoundError } from './exceptions';
+import { getLogger } from '../utils/log';
+import { RepositoryNotFoundError } from '../utils/exceptions';
 import { clone } from './vcs';
 import { unzip } from './zipfile';
 

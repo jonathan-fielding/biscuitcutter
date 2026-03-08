@@ -3,7 +3,7 @@
  */
 
 import * as nunjucks from 'nunjucks';
-import { getLogger } from './log';
+import { getLogger } from '../utils/log';
 import { registerDefaultExtensions } from './extensions';
 
 const logger = getLogger('biscuitcutter.environment');

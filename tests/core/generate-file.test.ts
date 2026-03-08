@@ -5,10 +5,10 @@ import { describe, it, expect, afterEach, beforeEach } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { createStrictEnvironment } from '../src/environment';
-import { generateFile, isCopyOnlyPath } from '../src/generate';
+import { createStrictEnvironment } from '../../src/template/environment';
+import { generateFile, isCopyOnlyPath } from '../../src/core/generate';
 
-const FILES_DIR = path.join(__dirname, 'files');
+const FILES_DIR = path.join(__dirname, '../_fixtures/files');
 
 describe('isCopyOnlyPath', () => {
   it('should return true for matching copy_without_render patterns', () => {

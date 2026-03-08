@@ -5,15 +5,15 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import { execSync } from 'child_process';
-import { getLogger } from './log';
+import { getLogger } from '../utils/log';
 import {
   RepositoryCloneFailedError,
   RepositoryNotFoundError,
   UnknownRepoTypeError,
   VCSNotInstalledError,
-} from './exceptions';
-import { promptAndDelete } from './prompt';
-import { makeSurePathExists } from './utils';
+} from '../utils/exceptions';
+import { promptAndDelete } from '../core/prompt';
+import { makeSurePathExists } from '../utils/utils';
 
 const logger = getLogger('biscuitcutter.vcs');
 

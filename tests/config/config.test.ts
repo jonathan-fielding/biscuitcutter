@@ -11,13 +11,13 @@ import {
   getUserConfig,
   DEFAULT_CONFIG,
   USER_CONFIG_PATH,
-} from '../src/config';
+} from '../../src/config/config';
 import {
   ConfigDoesNotExistError,
   InvalidConfigurationError,
-} from '../src/exceptions';
+} from '../../src/utils/exceptions';
 
-const FIXTURES_DIR = path.join(__dirname, 'test-config');
+const FIXTURES_DIR = path.join(__dirname, '../_fixtures/test-config');
 
 describe('mergeConfigs', () => {
   it('should merge two simple objects', () => {

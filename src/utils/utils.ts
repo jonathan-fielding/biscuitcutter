@@ -8,7 +8,7 @@ import * as os from 'os';
 import * as fsExtra from 'fs-extra';
 import * as nunjucks from 'nunjucks';
 import { getLogger } from './log';
-import { createStrictEnvironment } from './environment';
+import { createStrictEnvironment } from '../template/environment';
 
 const logger = getLogger('biscuitcutter.utils');
 

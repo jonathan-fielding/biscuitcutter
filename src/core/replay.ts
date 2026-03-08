@@ -4,7 +4,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { makeSurePathExists } from './utils';
+import { makeSurePathExists } from '../utils/utils';
 
 /**
  * Get the name of the replay file.

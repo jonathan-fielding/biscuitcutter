@@ -6,10 +6,10 @@ import * as path from 'path';
 import {
   generateContext,
   applyOverwritesToContext,
-} from '../src/generate';
-import { ContextDecodingError } from '../src/exceptions';
+} from '../../src/core/generate';
+import { ContextDecodingError } from '../../src/utils/exceptions';
 
-const CONTEXT_DIR = path.join(__dirname, 'test-generate-context');
+const CONTEXT_DIR = path.join(__dirname, '../_fixtures/test-generate-context');
 
 describe('generateContext', () => {
   it('should load context from JSON file', () => {

@@ -5,8 +5,8 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { findHook, runScript, validHook } from '../src/hooks';
-import { FailedHookError } from '../src/exceptions';
+import { findHook, runScript, validHook } from '../../src/core/hooks';
+import { FailedHookError } from '../../src/utils/exceptions';
 
 describe('validHook', () => {
   it('should return true for valid pre_gen_project.py', () => {

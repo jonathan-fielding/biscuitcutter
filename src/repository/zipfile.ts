@@ -6,10 +6,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import { execSync } from 'child_process';
-import { getLogger } from './log';
-import { InvalidZipRepositoryError } from './exceptions';
-import { promptAndDelete, readRepoPassword } from './prompt';
-import { makeSurePathExists } from './utils';
+import { getLogger } from '../utils/log';
+import { InvalidZipRepositoryError } from '../utils/exceptions';
+import { promptAndDelete, readRepoPassword } from '../core/prompt';
+import { makeSurePathExists } from '../utils/utils';
 
 const logger = getLogger('biscuitcutter.zipfile');
 

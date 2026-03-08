@@ -4,9 +4,9 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { getLogger } from './log';
-import { NonTemplatedInputDirError } from './exceptions';
-import { VARIABLE_START_STRING, VARIABLE_END_STRING } from './environment';
+import { getLogger } from '../utils/log';
+import { NonTemplatedInputDirError } from '../utils/exceptions';
+import { VARIABLE_START_STRING, VARIABLE_END_STRING } from '../template/environment';
 
 const logger = getLogger('biscuitcutter.find');
 

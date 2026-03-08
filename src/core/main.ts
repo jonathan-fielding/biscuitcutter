@@ -6,15 +6,15 @@
  */
 
 import * as path from 'path';
-import { getLogger } from './log';
-import { getUserConfig } from './config';
-import { InvalidModeError } from './exceptions';
+import { getLogger } from '../utils/log';
+import { getUserConfig } from '../config/config';
+import { InvalidModeError } from '../utils/exceptions';
 import { generateContext, generateFiles } from './generate';
 import { runPrePromptHook } from './hooks';
 import { chooseNestedTemplate, promptForConfig } from './prompt';
 import { dump, load } from './replay';
-import { determineRepoDir } from './repository';
-import { rmtree } from './utils';
+import { determineRepoDir } from '../repository/repository';
+import { rmtree } from '../utils/utils';
 
 const logger = getLogger('biscuitcutter.main');
 

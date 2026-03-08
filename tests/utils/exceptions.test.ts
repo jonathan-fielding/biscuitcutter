@@ -15,7 +15,7 @@ import {
   ContextDecodingError,
   UnknownExtensionError,
   InvalidModeError,
-} from '../src/exceptions';
+} from '../../src/utils/exceptions';
 
 describe('Exceptions', () => {
   it('all custom errors should extend BiscuitCutterError', () => {

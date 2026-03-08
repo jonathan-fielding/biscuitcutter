@@ -5,7 +5,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { dump, load, getFileName } from '../src/replay';
+import { dump, load, getFileName } from '../../src/core/replay';
 
 describe('getFileName', () => {
   it('should return correct path with .json extension', () => {

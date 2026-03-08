@@ -6,15 +6,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { execFileSync, execSync } from 'child_process';
 import * as os from 'os';
-import { getLogger } from './log';
-import { FailedHookError } from './exceptions';
+import { getLogger } from '../utils/log';
+import { FailedHookError } from '../utils/exceptions';
 import {
   createEnvWithContext,
   createTmpRepoDir,
   makeExecutable,
   rmtree,
   workIn,
-} from './utils';
+} from '../utils/utils';
 
 const logger = getLogger('biscuitcutter.hooks');
 

@@ -6,8 +6,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import * as yaml from 'yaml';
-import { getLogger } from './log';
-import { ConfigDoesNotExistError, InvalidConfigurationError } from './exceptions';
+import { getLogger } from '../utils/log';
+import { ConfigDoesNotExistError, InvalidConfigurationError } from '../utils/exceptions';
 
 const logger = getLogger('biscuitcutter.config');
 
