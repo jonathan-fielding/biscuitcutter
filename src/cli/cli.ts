@@ -21,8 +21,7 @@ import {
 } from '../utils/exceptions';
 import { configureLogger } from '../utils/log';
 import { biscuitcutter } from '../core/main';
-
-const VERSION = '1.0.0';
+import { version as VERSION } from '../../package.json';
 
 function versionMsg(): string {
   const location = path.dirname(path.dirname(path.resolve(__filename)));
