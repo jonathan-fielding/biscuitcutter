@@ -2,7 +2,7 @@
 
 A command-line utility that creates projects from project templates, e.g. creating a TypeScript package project from a project template.
 
-BiscuitCutter is inspired heavily by [Cookiecutter](https://github.com/cookiecutter/cookiecutter), now designed to work seamlessly in Node.js environments.
+BiscuitCutter is a Node.js implementation inspired by [Cookiecutter](https://github.com/cookiecutter/cookiecutter). It's compatible with the majority of existing Cookiecutter templates—use the thousands of templates already available on GitHub, or create your own.
 
 ## Installation
 
