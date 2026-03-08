@@ -18,7 +18,6 @@ import {
   UnableToFindCookiecutterTemplateError,
 } from '../utils/exceptions';
 import {
-  isGitRepo,
   isRepoClean,
   cloneRepo,
   getLatestCommit,
@@ -318,7 +317,6 @@ interface GenerateTemplateOptions {
   repoDir: string;
   templateState: TemplateState;
   projectDir: string;
-  biscuitcutterInput?: boolean;
   checkout?: string | null;
   deletedPaths?: Set<string>;
   updateDeletedPaths?: boolean;
@@ -330,7 +328,6 @@ function generateTemplateForDiff(options: GenerateTemplateOptions): Record<strin
     repoDir,
     templateState,
     projectDir,
-    biscuitcutterInput = false,
     checkout,
     deletedPaths = new Set<string>(),
     updateDeletedPaths = false,
@@ -683,7 +680,6 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
       repoDir,
       templateState: workingState,
       projectDir,
-      biscuitcutterInput: false,
       checkout: workingState.commit,
       deletedPaths,
       updateDeletedPaths: true,
@@ -703,7 +699,6 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
       repoDir,
       templateState: workingState,
       projectDir,
-      biscuitcutterInput,
       checkout: latestCommit,
       deletedPaths,
       updateDeletedPaths: false,

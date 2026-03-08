@@ -312,7 +312,6 @@ export interface PatchResult {
 export function applyThreeWayPatch(
   diff: string,
   targetDir: string,
-  allowUntrackedFiles: boolean = false,
 ): PatchResult {
   const offset = getGitOffset(targetDir);
 
@@ -392,7 +391,7 @@ export function applyPatch(
   allowUntrackedFiles: boolean = false,
 ): PatchResult {
   if (isGitRepo(targetDir)) {
-    const result = applyThreeWayPatch(diff, targetDir, allowUntrackedFiles);
+    const result = applyThreeWayPatch(diff, targetDir);
 
     if (!result.success && isRepoClean(targetDir, allowUntrackedFiles)) {
       console.warn('Failed to apply the update. Retrying with a different update strategy.');

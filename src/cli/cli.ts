@@ -38,17 +38,6 @@ function versionMsg(): string {
   return `BiscuitCutter ${VERSION} from ${location} (Node.js ${process.version})`;
 }
 
-function validateExtraContext(value: string, previous: Record<string, string>): Record<string, string> {
-  if (!value.includes('=')) {
-    console.error(
-      `EXTRA_CONTEXT should contain items of the form key=value; '${value}' doesn't match that form`,
-    );
-    process.exit(1);
-  }
-  const [key, ...rest] = value.split('=');
-  previous[key] = rest.join('=');
-  return previous;
-}
 
 function listInstalledTemplates(
   defaultConfig: boolean,

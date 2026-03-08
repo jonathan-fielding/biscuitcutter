@@ -24,7 +24,6 @@ import {
   rmtree,
   workIn,
 } from '../utils/utils';
-import { registerDefaultExtensions } from '../template/extensions';
 
 const logger = getLogger('biscuitcutter.generate');
 

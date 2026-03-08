@@ -6,27 +6,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as readline from 'readline';
 import * as nunjucks from 'nunjucks';
-import { getLogger } from '../utils/log';
 import { UndefinedVariableInTemplateError } from '../utils/exceptions';
 import { createEnvWithContext, rmtree } from '../utils/utils';
 
-const logger = getLogger('biscuitcutter.prompt');
 
-// We use synchronous readline for prompts (like Python's input())
-function promptSync(question: string, defaultValue?: string): string {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  return new Promise<string>((resolve) => {
-    const defaultSuffix = defaultValue !== undefined ? ` [${defaultValue}]` : '';
-    rl.question(`${question}${defaultSuffix}: `, (answer) => {
-      rl.close();
-      resolve(answer || (defaultValue ?? ''));
-    });
-  }) as any; // This is async but we provide sync-like API via main async flow
-}
 
 /**
  * Prompt user for variable and return the entered value or given default.
