@@ -77,7 +77,7 @@ export function createTmpRepoDir(repoDir: string): string {
   const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), 'biscuitcutter-'));
   const newDir = path.join(baseDir, path.basename(resolvedRepoDir));
   logger.debug('Copying repo_dir from %s to %s', resolvedRepoDir, newDir);
-  fsExtra.copySync(resolvedRepoDir, newDir);
+  fsExtra.copySync(resolvedRepoDir, newDir, { dereference: false });
   return newDir;
 }
 

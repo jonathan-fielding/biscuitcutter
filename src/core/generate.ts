@@ -11,6 +11,7 @@ import {
   ContextDecodingError,
   EmptyDirNameError,
   OutputDirExistsError,
+  PathTraversalError,
   UndefinedVariableInTemplateError,
 } from '../utils/exceptions';
 import { findTemplate } from './find';
@@ -25,6 +26,20 @@ import {
 import { registerDefaultExtensions } from '../template/extensions';
 
 const logger = getLogger('biscuitcutter.generate');
+
+/**
+ * Validate that a resolved path stays within the boundary directory.
+ * Throws PathTraversalError if the path would escape the boundary.
+ */
+function validatePathWithinBoundary(targetPath: string, boundaryDir: string): void {
+  const resolvedTarget = path.resolve(targetPath);
+  const resolvedBoundary = path.resolve(boundaryDir);
+
+  // Ensure the resolved path starts with the boundary directory
+  if (!resolvedTarget.startsWith(resolvedBoundary + path.sep) && resolvedTarget !== resolvedBoundary) {
+    throw new PathTraversalError(targetPath, boundaryDir);
+  }
+}
 
 /**
  * Check if an error is an undefined variable error from Nunjucks.
@@ -228,6 +243,9 @@ export function generateFile(
   const outfileRendered = env.renderString(infile, context);
   const outfile = path.join(projectDir, outfileRendered);
 
+  // Security: validate the rendered path stays within project directory
+  validatePathWithinBoundary(outfile, projectDir);
+
   if (fs.existsSync(outfile) && fs.statSync(outfile).isDirectory()) {
     logger.debug('The resulting file name is empty: %s', outfile);
     return;
@@ -309,6 +327,9 @@ export function renderAndCreateDir(
 
   const renderedDirname = environment.renderString(dirname, context);
   const dirToCreate = path.join(outputDir, renderedDirname);
+
+  // Security: validate the rendered path stays within output directory
+  validatePathWithinBoundary(dirToCreate, outputDir);
 
   logger.debug(
     'Rendered dir %s must exist in output_dir %s',
@@ -460,7 +481,7 @@ export function generateFiles(
         if (fs.existsSync(outdir) && fs.statSync(outdir).isDirectory()) {
           fs.rmSync(outdir, { recursive: true, force: true });
         }
-        fsExtra.copySync(indir, outdir);
+        fsExtra.copySync(indir, outdir, { dereference: false });
       }
 
       // Mutate dirs to only include render dirs

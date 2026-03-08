@@ -4,7 +4,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { execFileSync, execSync } from 'child_process';
+import { execFileSync, spawnSync } from 'child_process';
 import * as os from 'os';
 import { getLogger } from '../utils/log';
 import { FailedHookError } from '../utils/exceptions';
@@ -81,7 +81,21 @@ export function runScript(scriptPath: string, cwd: string = '.'): void {
 
   try {
     if (isWindows) {
-      execSync(scriptCommand.join(' '), { cwd, stdio: 'inherit' });
+      // Use spawnSync with shell:true on Windows to handle script execution
+      // while avoiding command injection by passing args as array
+      const result = spawnSync(scriptCommand[0], scriptCommand.slice(1), {
+        cwd,
+        stdio: 'inherit',
+        shell: true,
+      });
+      if (result.error) {
+        throw result.error;
+      }
+      if (result.status !== EXIT_SUCCESS) {
+        const err = new Error('Script failed') as any;
+        err.status = result.status;
+        throw err;
+      }
     } else {
       execFileSync(scriptCommand[0], scriptCommand.slice(1), {
         cwd,

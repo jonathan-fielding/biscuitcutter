@@ -215,3 +215,101 @@ export class InvalidZipRepositoryError extends BiscuitCutterError {
     this.name = 'InvalidZipRepositoryError';
   }
 }
+
+// ==========================================
+// Template tracking exceptions
+// ==========================================
+
+/**
+ * Exception for when no .biscuitcutter.json state file is found.
+ * Raised when template tracking operations require an existing state file.
+ */
+export class TemplateStateNotFoundError extends BiscuitCutterError {
+  public directory: string;
+
+  constructor(directory: string) {
+    super(`Unable to locate a \`.biscuitcutter.json\` state file in \`${directory}\``);
+    this.name = 'TemplateStateNotFoundError';
+    this.directory = directory;
+  }
+}
+
+/**
+ * Exception for when .biscuitcutter.json already exists.
+ * Raised when attempting to create a new state file but one already exists.
+ */
+export class TemplateStateExistsError extends BiscuitCutterError {
+  public fileLocation: string;
+
+  constructor(fileLocation: string) {
+    super(`\`.biscuitcutter.json\` is already defined at \`${fileLocation}\``);
+    this.name = 'TemplateStateExistsError';
+    this.fileLocation = fileLocation;
+  }
+}
+
+/**
+ * Exception for invalid cookiecutter repository.
+ * Raised when unable to initialize a project from a cookiecutter repository.
+ */
+export class InvalidCookiecutterRepositoryError extends BiscuitCutterError {
+  public cookiecutterRepo: string;
+
+  constructor(cookiecutterRepo: string, details: string = '') {
+    super(`Unable to initialize the cookiecutter using ${cookiecutterRepo}! ${details.trim()}`);
+    this.name = 'InvalidCookiecutterRepositoryError';
+    this.cookiecutterRepo = cookiecutterRepo;
+  }
+}
+
+/**
+ * Exception for when unable to find a cookiecutter template.
+ * Raised when unable to locate a valid cookiecutter template in a directory.
+ */
+export class UnableToFindCookiecutterTemplateError extends BiscuitCutterError {
+  public directory: string;
+
+  constructor(directory: string) {
+    super(`Unable to locate a Cookiecutter template in \`${directory}\``);
+    this.name = 'UnableToFindCookiecutterTemplateError';
+    this.directory = directory;
+  }
+}
+
+/**
+ * Exception for unicode decoding errors in changesets.
+ * Raised when the diff contains characters that cannot be decoded as UTF-8.
+ */
+export class ChangesetUnicodeError extends BiscuitCutterError {
+  constructor() {
+    super('The changeset contains characters that cannot be decoded as UTF-8');
+    this.name = 'ChangesetUnicodeError';
+  }
+}
+
+/**
+ * Exception for dirty git working directory.
+ * Raised when cruft update is attempted on an unclean git repository.
+ */
+export class DirtyGitRepositoryError extends BiscuitCutterError {
+  constructor(message: string = 'Cannot apply updates on an unclean git project') {
+    super(message);
+    this.name = 'DirtyGitRepositoryError';
+  }
+}
+
+/**
+ * Exception for path traversal attempts.
+ * Raised when a rendered path would escape the intended output directory.
+ */
+export class PathTraversalError extends BiscuitCutterError {
+  public attemptedPath: string;
+  public boundaryDir: string;
+
+  constructor(attemptedPath: string, boundaryDir: string) {
+    super(`Path traversal detected: '${attemptedPath}' would escape output directory '${boundaryDir}'`);
+    this.name = 'PathTraversalError';
+    this.attemptedPath = attemptedPath;
+    this.boundaryDir = boundaryDir;
+  }
+}

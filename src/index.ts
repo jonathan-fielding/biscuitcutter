@@ -51,4 +51,50 @@ export {
   RepositoryNotFoundError,
   RepositoryCloneFailedError,
   InvalidZipRepositoryError,
+  PathTraversalError,
+  // Template tracking exceptions
+  TemplateStateNotFoundError,
+  TemplateStateExistsError,
+  InvalidCookiecutterRepositoryError,
+  UnableToFindCookiecutterTemplateError,
+  ChangesetUnicodeError,
+  DirtyGitRepositoryError,
 } from './utils/exceptions';
+
+// Template tracking - update projects from their templates
+export {
+  // Commands
+  create,
+  check,
+  update,
+  diff,
+  link,
+  // Types
+  CreateOptions,
+  CheckOptions,
+  CheckResult,
+  UpdateOptions,
+  UpdateResult,
+  DiffOptions,
+  DiffResult,
+  LinkOptions,
+  // State management
+  TemplateState,
+  STATE_FILE,
+  getStateFile,
+  readTemplateState,
+  writeTemplateState,
+  cleanPrivateVariables,
+  getSkipPaths,
+} from './core/tracking';
+
+// Git utilities
+export {
+  getDiff,
+  displayDiff,
+  isGitRepo,
+  isRepoClean,
+  applyPatch,
+  isProjectUpdated,
+} from './utils/git';
+

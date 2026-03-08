@@ -15,6 +15,8 @@ import { chooseNestedTemplate, promptForConfig } from './prompt';
 import { dump, load } from './replay';
 import { determineRepoDir } from '../repository/repository';
 import { rmtree } from '../utils/utils';
+import { writeTemplateState, TemplateState } from './tracking';
+import { getLatestCommit, isGitRepo } from '../utils/git';
 
 const logger = getLogger('biscuitcutter.main');
 
@@ -185,6 +187,29 @@ export async function biscuitcutter(options: BiscuitCutterOptions): Promise<stri
     acceptHooks,
     keepProjectOnFailure,
   );
+
+  // Write template state file for update tracking
+  try {
+    const commit = isGitRepo(baseRepoDir) ? getLatestCommit(baseRepoDir) : null;
+    // Filter out private variables (they're machine-specific and not useful for tracking)
+    const filteredContext: Record<string, any> = {};
+    for (const [key, value] of Object.entries(context.cookiecutter)) {
+      if (!key.startsWith('_')) {
+        filteredContext[key] = value;
+      }
+    }
+    const templateState: TemplateState = {
+      template,
+      commit: commit || 'unknown',
+      checkout: checkout || null,
+      context: filteredContext,
+      directory: directory || null,
+    };
+    writeTemplateState(result, templateState);
+    logger.debug('Wrote template state to %s/.biscuitcutter.json', result);
+  } catch (e) {
+    logger.debug('Could not write template state file: %s', e);
+  }
 
   // Cleanup (if required)
   if (cleanup) {
