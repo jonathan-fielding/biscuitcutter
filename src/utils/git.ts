@@ -182,13 +182,15 @@ export function isProjectUpdated(
 
   // Check if there are any changes between the commits
   try {
-    spawnSync('git', ['diff', '--quiet', currentCommit, latestCommit], {
+    const result = spawnSync('git', ['diff', '--quiet', currentCommit, latestCommit], {
       cwd: repoDir,
       stdio: 'pipe',
     });
-    return true;
+    if (result.status === 0) {
+      return true; // No differences
+    }
   } catch {
-    // There are differences
+    // Execution error
   }
 
   // In non-strict mode, check if current commit is a descendant of latest

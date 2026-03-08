@@ -30,6 +30,7 @@ import {
 } from '../utils/git';
 import { generateContext, generateFiles } from './generate';
 import { promptForConfig } from './prompt';
+import { expandAbbreviations } from '../repository/repository';
 
 const logger = getLogger('biscuitcutter.tracking');
 
@@ -231,13 +232,16 @@ export function getSkipPaths(state: TemplateState, projectDir: string): Set<stri
 // ==========================================
 
 function resolveTemplateUrl(templateUrl: string): string {
-  if (!templateUrl.match(/^[a-z]+:\/\//i) && !templateUrl.startsWith('git@')) {
-    const absolutePath = path.resolve(templateUrl);
+  const config = getUserConfig();
+  const expanded = expandAbbreviations(templateUrl, config.abbreviations);
+
+  if (!expanded.match(/^[a-z]+:\/\//i) && !expanded.startsWith('git@')) {
+    const absolutePath = path.resolve(expanded);
     if (fs.existsSync(absolutePath)) {
       return absolutePath;
     }
   }
-  return templateUrl;
+  return expanded;
 }
 
 function validateCookiecutterTemplate(templateDir: string): void {
@@ -651,7 +655,7 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
     const newTemplateDir = path.join(tempDir, 'new_template');
     const deletedPaths = new Set<string>();
 
-    const templateGitUrl = templatePath ? resolveTemplateUrl(templatePath) : templateState.template;
+    const templateGitUrl = templatePath ? resolveTemplateUrl(templatePath) : resolveTemplateUrl(templateState.template);
 
     logger.debug('Cloning template from %s', templateGitUrl);
     cloneRepo(templateGitUrl, repoDir, checkout || templateState.checkout);
