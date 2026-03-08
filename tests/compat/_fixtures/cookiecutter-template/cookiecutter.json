@@ -1,0 +1,5 @@
+{
+  "project_name": "Legacy Project",
+  "project_slug": "{{ cookiecutter.project_name.toLowerCase().replace(' ', '_') }}",
+  "author": "Legacy Author"
+}

@@ -3,11 +3,11 @@
 from jinja2 import Environment
 from jinja2.ext import Extension
 
-from cookiecutter.utils import simple_filter
+from biscuitcutter.utils import simple_filter
 
 
 class FoobarExtension(Extension):
-    """Simple jinja2 extension for cookiecutter test purposes."""
+    """Simple jinja2 extension for biscuitcutter test purposes."""
 
     def __init__(self, environment: Environment) -> None:
         """Foobar Extension Constructor."""

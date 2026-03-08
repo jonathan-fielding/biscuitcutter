@@ -37,7 +37,7 @@ export function createStrictEnvironment(options: EnvironmentOptions = {}): nunju
   }
 
   // Get jinja2 env vars from context
-  const contextEnvVars = ctx.cookiecutter?._jinja2_env_vars || {};
+  const contextEnvVars = ctx.biscuitcutter?._jinja2_env_vars || {};
 
   const loader = searchPaths
     ? new nunjucks.FileSystemLoader(searchPaths, { noCache: true })
@@ -55,6 +55,11 @@ export function createStrictEnvironment(options: EnvironmentOptions = {}): nunju
   // Register default filters and globals
   registerDefaultExtensions(env);
 
+  // Add backwards compatibility for templates that use {{ cookiecutter.some_var }}
+  if (ctx && ctx.biscuitcutter) {
+    env.addGlobal('cookiecutter', ctx.biscuitcutter);
+  }
+
   return env;
 }
 
@@ -63,7 +68,7 @@ export function createStrictEnvironment(options: EnvironmentOptions = {}): nunju
  */
 function readExtensions(context: Record<string, any>): string[] {
   try {
-    const extensions = context.cookiecutter?._extensions;
+    const extensions = context.biscuitcutter?._extensions;
     if (Array.isArray(extensions)) {
       return extensions.map(String);
     }

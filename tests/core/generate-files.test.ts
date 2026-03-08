@@ -33,7 +33,7 @@ describe('generateFiles', () => {
     expect(() =>
       generateFiles(
         path.join(FIXTURES_DIR, 'test-generate-files-nontemplated'),
-        { cookiecutter: { food: 'pizza' } },
+        { biscuitcutter: { food: 'pizza' } },
         tmpDir,
       ),
     ).toThrow(NonTemplatedInputDirError);
@@ -42,7 +42,7 @@ describe('generateFiles', () => {
   it('should generate files with unicode context', () => {
     generateFiles(
       path.join(FIXTURES_DIR, 'test-generate-files'),
-      { cookiecutter: { food: 'pizzä' } },
+      { biscuitcutter: { food: 'pizzä' } },
       tmpDir,
     );
 
@@ -55,7 +55,7 @@ describe('generateFiles', () => {
   it('should generate files with linux newline', () => {
     generateFiles(
       path.join(FIXTURES_DIR, 'test-generate-files'),
-      { cookiecutter: { food: 'pizzä' } },
+      { biscuitcutter: { food: 'pizzä' } },
       tmpDir,
     );
 
@@ -68,7 +68,7 @@ describe('generateFiles', () => {
   it('should generate files from absolute path', () => {
     generateFiles(
       path.resolve(path.join(FIXTURES_DIR, 'test-generate-files')),
-      { cookiecutter: { food: 'pizzä' } },
+      { biscuitcutter: { food: 'pizzä' } },
       tmpDir,
     );
 
@@ -83,7 +83,7 @@ describe('generateFiles', () => {
 
     const projectDir = generateFiles(
       path.resolve(path.join(FIXTURES_DIR, 'test-generate-files')),
-      { cookiecutter: { food: 'pizzä' } },
+      { biscuitcutter: { food: 'pizzä' } },
       outputDir,
     );
 
@@ -96,7 +96,7 @@ describe('generateFiles', () => {
   it('should preserve file permissions', () => {
     generateFiles(
       path.join(FIXTURES_DIR, 'test-generate-files-permissions'),
-      { cookiecutter: { permissions: 'permissions' } },
+      { biscuitcutter: { permissions: 'permissions' } },
       tmpDir,
     );
 
@@ -109,13 +109,13 @@ describe('generateFiles', () => {
     const srcSimple = path.join(
       FIXTURES_DIR,
       'test-generate-files-permissions',
-      'input{{cookiecutter.permissions}}',
+      'input{{biscuitcutter.permissions}}',
       'simple.txt',
     );
     const srcScript = path.join(
       FIXTURES_DIR,
       'test-generate-files-permissions',
-      'input{{cookiecutter.permissions}}',
+      'input{{biscuitcutter.permissions}}',
       'script.sh',
     );
     expect(fs.statSync(simpleFile).mode).toBe(fs.statSync(srcSimple).mode);
@@ -130,7 +130,7 @@ describe('generateFiles', () => {
 
     generateFiles(
       path.join(FIXTURES_DIR, 'test-generate-files'),
-      { cookiecutter: { food: 'pizzä' } },
+      { biscuitcutter: { food: 'pizzä' } },
       tmpDir,
       true,  // overwriteIfExists
       true,  // skipIfFileExists
@@ -149,7 +149,7 @@ describe('generateFiles', () => {
     expect(() =>
       generateFiles(
         path.join(FIXTURES_DIR, 'test-generate-files'),
-        { cookiecutter: { food: 'pizzä' } },
+        { biscuitcutter: { food: 'pizzä' } },
         tmpDir,
         false, // overwriteIfExists
         true,  // skipIfFileExists
@@ -168,7 +168,7 @@ describe('generateFiles', () => {
 
     generateFiles(
       path.join(FIXTURES_DIR, 'test-generate-files'),
-      { cookiecutter: { food: 'pizzä' } },
+      { biscuitcutter: { food: 'pizzä' } },
       tmpDir,
       true, // overwriteIfExists
     );
@@ -194,7 +194,7 @@ describe('renderAndCreateDir', () => {
   it('should throw EmptyDirNameError for empty directory name', () => {
     const env = createStrictEnvironment();
     expect(() =>
-      renderAndCreateDir('', { cookiecutter: {} }, tmpDir, env),
+      renderAndCreateDir('', { biscuitcutter: {} }, tmpDir, env),
     ).toThrow(EmptyDirNameError);
   });
 
@@ -202,7 +202,7 @@ describe('renderAndCreateDir', () => {
     const env = createStrictEnvironment();
     const [dirPath, isNew] = renderAndCreateDir(
       'myproject',
-      { cookiecutter: {} },
+      { biscuitcutter: {} },
       tmpDir,
       env,
     );
@@ -214,7 +214,7 @@ describe('renderAndCreateDir', () => {
     const env = createStrictEnvironment();
     fs.mkdirSync(path.join(tmpDir, 'existing'));
     expect(() =>
-      renderAndCreateDir('existing', { cookiecutter: {} }, tmpDir, env),
+      renderAndCreateDir('existing', { biscuitcutter: {} }, tmpDir, env),
     ).toThrow(OutputDirExistsError);
   });
 
@@ -223,7 +223,7 @@ describe('renderAndCreateDir', () => {
     fs.mkdirSync(path.join(tmpDir, 'existing'));
     const [dirPath, isNew] = renderAndCreateDir(
       'existing',
-      { cookiecutter: {} },
+      { biscuitcutter: {} },
       tmpDir,
       env,
       true,
@@ -259,7 +259,7 @@ describe('UndefinedVariable Errors in generateFiles', () => {
   });
 
   const undefinedContext = {
-    cookiecutter: {
+    biscuitcutter: {
       project_slug: 'testproject',
       github_username: 'hackebrot',
     },

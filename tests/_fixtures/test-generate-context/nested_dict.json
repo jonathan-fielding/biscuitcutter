@@ -4,7 +4,7 @@
   "project": {
     "name": "Kivy Project",
     "description": "Kivy Project",
-    "repo_name": "{{cookiecutter.project_name|lower}}",
+    "repo_name": "{{biscuitcutter.project_name|lower}}",
     "orientation": [
       "all",
       "landscape",

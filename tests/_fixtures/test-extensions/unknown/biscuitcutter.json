@@ -1,0 +1,7 @@
+{
+  "project_slug": "Foobar",
+  "year": "{{biscuitcutter.nope | foobar}}",
+  "_extensions": [
+    "FoobarExtension"
+  ]
+}

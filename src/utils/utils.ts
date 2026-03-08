@@ -85,7 +85,7 @@ export function createTmpRepoDir(repoDir: string): string {
  * Create a nunjucks environment using the provided context.
  */
 export function createEnvWithContext(context: Record<string, any>): nunjucks.Environment {
-  const envVars = context.cookiecutter?._jinja2_env_vars || {};
+  const envVars = context.biscuitcutter?._jinja2_env_vars || {};
   return createStrictEnvironment({ context, ...envVars });
 }
 

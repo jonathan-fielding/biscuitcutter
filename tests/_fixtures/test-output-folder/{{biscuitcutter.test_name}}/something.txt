@@ -1,0 +1,3 @@
+Hi!
+My name is {{ biscuitcutter.full_name }}.
+It is {{ biscuitcutter.year }}.

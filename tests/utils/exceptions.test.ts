@@ -42,20 +42,20 @@ describe('Exceptions', () => {
     const undefinedVarError = new UndefinedVariableInTemplateError(
       'Beautiful is better than ugly',
       new Error('Errors should never pass silently'),
-      { cookiecutter: { foo: 'bar' } },
+      { biscuitcutter: { foo: 'bar' } },
     );
 
     const expectedStr =
       'Beautiful is better than ugly. ' +
       'Error message: Errors should never pass silently. ' +
-      'Context: {"cookiecutter":{"foo":"bar"}}';
+      'Context: {"biscuitcutter":{"foo":"bar"}}';
 
     expect(undefinedVarError.toString()).toBe(expectedStr);
   });
 
   it('UndefinedVariableInTemplateError should store error and context', () => {
     const innerError = new Error('inner');
-    const context = { cookiecutter: { key: 'val' } };
+    const context = { biscuitcutter: { key: 'val' } };
     const err = new UndefinedVariableInTemplateError('msg', innerError, context);
 
     expect(err.message).toBe('msg');

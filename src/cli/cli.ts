@@ -55,7 +55,7 @@ function listInstalledTemplates(
   passedConfigFile?: string | null,
 ): void {
   const config = getUserConfig(passedConfigFile, defaultConfig);
-  const biscuitcutterFolder = config.cookiecutters_dir;
+  const biscuitcutterFolder = config.biscuitcutters_dir;
 
   if (!fs.existsSync(biscuitcutterFolder)) {
     console.error(
@@ -68,7 +68,9 @@ function listInstalledTemplates(
     .readdirSync(biscuitcutterFolder)
     .filter((folder) =>
       fs.existsSync(
-        path.join(biscuitcutterFolder, folder, 'cookiecutter.json'),
+        path.join(biscuitcutterFolder, folder, 'biscuitcutter.json'),
+      ) || fs.existsSync(
+        path.join(biscuitcutterFolder, folder, 'biscuitcutter.json (or cookiecutter.json)'),
       ),
     );
 
@@ -94,7 +96,7 @@ program
   )
   .option(
     '--no-input',
-    'Do not prompt for parameters and only use cookiecutter.json file content',
+    'Do not prompt for parameters and only use biscuitcutter.json (or cookiecutter.json) file content',
   )
   .option(
     '-c, --checkout <checkout>',
@@ -102,7 +104,7 @@ program
   )
   .option(
     '--directory <directory>',
-    'Directory within repo that holds cookiecutter.json file',
+    'Directory within repo that holds biscuitcutter.json (or cookiecutter.json) file',
   )
   .option('-v, --verbose', 'Print debug information', false)
   .option(
@@ -299,7 +301,7 @@ program
   .description('Create a new project from a template with update tracking enabled')
   .option('-o, --output-dir <dir>', 'Where to output the generated project', '.')
   .option('-c, --checkout <checkout>', 'Branch, tag, or commit to checkout')
-  .option('--directory <directory>', 'Directory within repo that holds cookiecutter.json')
+  .option('--directory <directory>', 'Directory within repo that holds biscuitcutter.json (or cookiecutter.json)')
   .option('--no-input', 'Do not prompt for parameters')
   .option('-e, --extra-context <items...>', 'Extra context items in key=value format')
   .option('--extra-context-file <path>', 'JSON file with extra context')
@@ -387,7 +389,7 @@ program
         projectDir: opts.projectDir,
         checkout: opts.checkout,
         templatePath: opts.templatePath,
-        cookiecutterInput: opts.cookiecutterInput,
+        biscuitcutterInput: opts.biscuitcutterInput,
         refreshPrivateVariables: opts.refreshPrivateVariables,
         skipApplyAsk: opts.yes,
         skipUpdate: opts.skipUpdate,
@@ -438,7 +440,7 @@ program
   .description('Link an existing project to a cookiecutter template')
   .option('-p, --project-dir <dir>', 'The project directory to link', '.')
   .option('-c, --checkout <checkout>', 'Branch, tag, or commit to link to')
-  .option('--directory <directory>', 'Directory within repo that holds cookiecutter.json')
+  .option('--directory <directory>', 'Directory within repo that holds biscuitcutter.json (or cookiecutter.json)')
   .option('--no-input', 'Do not prompt for parameters')
   .option('-e, --extra-context <items...>', 'Extra context items in key=value format')
   .option('--config-file <path>', 'User configuration file')

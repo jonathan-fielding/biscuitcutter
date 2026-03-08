@@ -13,7 +13,7 @@ const FILES_DIR = path.join(__dirname, '../_fixtures/files');
 describe('isCopyOnlyPath', () => {
   it('should return true for matching copy_without_render patterns', () => {
     const context = {
-      cookiecutter: { _copy_without_render: ['*.html', 'images/*'] },
+      biscuitcutter: { _copy_without_render: ['*.html', 'images/*'] },
     };
     expect(isCopyOnlyPath('index.html', context)).toBe(true);
     expect(isCopyOnlyPath('images/logo.png', context)).toBe(true);
@@ -21,13 +21,13 @@ describe('isCopyOnlyPath', () => {
 
   it('should return false for non-matching paths', () => {
     const context = {
-      cookiecutter: { _copy_without_render: ['*.html'] },
+      biscuitcutter: { _copy_without_render: ['*.html'] },
     };
     expect(isCopyOnlyPath('style.css', context)).toBe(false);
   });
 
   it('should return false when no copy_without_render list', () => {
-    const context = { cookiecutter: {} };
+    const context = { biscuitcutter: {} };
     expect(isCopyOnlyPath('index.html', context)).toBe(false);
   });
 });
@@ -51,13 +51,13 @@ describe('generateFile', () => {
     fs.mkdirSync(inDir);
     fs.writeFileSync(
       path.join(inDir, 'hello.txt'),
-      'Hello {{ cookiecutter.name }}!',
+      'Hello {{ biscuitcutter.name }}!',
     );
 
     const outDir = path.join(tmpDir, 'output');
     fs.mkdirSync(outDir);
 
-    const context = { cookiecutter: { name: 'World' } };
+    const context = { biscuitcutter: { name: 'World' } };
     const env = createStrictEnvironment({ searchPaths: inDir });
 
     const originalCwd = process.cwd();
@@ -81,7 +81,7 @@ describe('generateFile', () => {
     fs.mkdirSync(outDir);
     fs.writeFileSync(path.join(outDir, 'existing.txt'), 'Original content');
 
-    const context = { cookiecutter: {} };
+    const context = { biscuitcutter: {} };
     const env = createStrictEnvironment({ searchPaths: inDir });
 
     const originalCwd = process.cwd();
@@ -115,7 +115,7 @@ describe('generateFile', () => {
     const outDir = path.join(tmpDir, 'output');
     fs.mkdirSync(outDir);
 
-    const context = { cookiecutter: {} };
+    const context = { biscuitcutter: {} };
     const env = createStrictEnvironment({ searchPaths: inDir });
 
     const originalCwd = process.cwd();

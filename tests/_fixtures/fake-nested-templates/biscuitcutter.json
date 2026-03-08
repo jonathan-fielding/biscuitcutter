@@ -1,0 +1,14 @@
+{
+  "templates": {
+    "fake-project": {
+      "path": "./fake-project",
+      "title": "A Fake Project",
+      "description": "A biscuitcutter template for a project"
+    },
+    "fake-package": {
+      "path": "./fake-package",
+      "title": "A Fake Package",
+      "description": "A biscuitcutter template for a package"
+    }
+  }
+}

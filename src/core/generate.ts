@@ -17,6 +17,7 @@ import {
 import { findTemplate } from './find';
 import { runHookFromRepoDir } from './hooks';
 import { processYesNoResponse } from './prompt';
+import { createStrictEnvironment } from '../template/environment';
 import {
   createEnvWithContext,
   makeSurePathExists,
@@ -64,7 +65,7 @@ export function isCopyOnlyPath(
 ): boolean {
   try {
     const dontRender: string[] =
-      context.cookiecutter?._copy_without_render || [];
+      context.biscuitcutter?._copy_without_render || [];
     for (const pattern of dontRender) {
       if (minimatch(filePath, pattern)) {
         return true;
@@ -168,7 +169,7 @@ export function applyOverwritesToContext(
  * Loads the JSON file as an object, with key being the JSON filename stem.
  */
 export function generateContext(
-  contextFile: string = 'cookiecutter.json',
+  contextFile: string = 'biscuitcutter.json',
   defaultContext?: Record<string, any> | null,
   extraContext?: Record<string, any> | null,
 ): Record<string, any> {
@@ -188,7 +189,13 @@ export function generateContext(
 
   // Add the object to the context dictionary
   const fileName = path.basename(contextFile);
-  const fileStem = fileName.split('.')[0];
+  let fileStem = fileName.split('.')[0];
+  
+  // Map legacy cookiecutter templates to biscuitcutter context
+  if (fileStem === 'cookiecutter') {
+    fileStem = 'biscuitcutter';
+  }
+  
   context[fileStem] = obj;
 
   // Overwrite context variable defaults with the default context
@@ -292,8 +299,8 @@ export function generateFile(
   }
 
   // Check for configured newlines
-  if (context.cookiecutter?._new_lines) {
-    newline = context.cookiecutter._new_lines;
+  if (context.biscuitcutter?._new_lines) {
+    newline = context.biscuitcutter._new_lines;
     logger.debug('Using configured newline character %s', JSON.stringify(newline));
   }
 
@@ -442,16 +449,10 @@ export function generateFiles(
 
   workIn(templateDir, () => {
     // Set up nunjucks to load templates from current dir and ../templates
-    const loader = new nunjucks.FileSystemLoader(['.', '../templates'], {
-      noCache: true,
+    const renderEnv = createStrictEnvironment({
+      context,
+      searchPaths: ['.', '../templates']
     });
-    const renderEnv = new nunjucks.Environment(loader, {
-      autoescape: false,
-      throwOnUndefined: true,
-    });
-
-    // Register extensions on the render env too
-    registerDefaultExtensions(renderEnv);
 
     // Walk the template directory
     for (const [root, dirs, files] of walkSync('.')) {

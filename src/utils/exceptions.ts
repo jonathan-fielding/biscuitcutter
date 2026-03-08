@@ -253,12 +253,12 @@ export class TemplateStateExistsError extends BiscuitCutterError {
  * Raised when unable to initialize a project from a cookiecutter repository.
  */
 export class InvalidCookiecutterRepositoryError extends BiscuitCutterError {
-  public cookiecutterRepo: string;
+  public biscuitcutterRepo: string;
 
   constructor(cookiecutterRepo: string, details: string = '') {
     super(`Unable to initialize the cookiecutter using ${cookiecutterRepo}! ${details.trim()}`);
     this.name = 'InvalidCookiecutterRepositoryError';
-    this.cookiecutterRepo = cookiecutterRepo;
+    this.biscuitcutterRepo = cookiecutterRepo;
   }
 }
 

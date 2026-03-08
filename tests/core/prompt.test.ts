@@ -84,7 +84,7 @@ describe('renderVariable', () => {
 describe('promptForConfig', () => {
   it('should return context values directly with no_input', async () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         project_name: 'MyProject',
         version: '1.0.0',
       },
@@ -96,7 +96,7 @@ describe('promptForConfig', () => {
 
   it('should render template variables with no_input', async () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         project_name: 'MyProject',
         slug: '{{ cookiecutter.project_name | lower }}',
       },
@@ -108,7 +108,7 @@ describe('promptForConfig', () => {
 
   it('should return first choice for list variables with no_input', async () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         license: ['MIT', 'BSD', 'Apache'],
       },
     };
@@ -118,7 +118,7 @@ describe('promptForConfig', () => {
 
   it('should preserve private variables (single underscore) without rendering', async () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         project_name: 'Skip render',
         _skip_jinja_template: '{{cookiecutter.project_name}}',
         _skip_float: 123.25,
@@ -137,7 +137,7 @@ describe('promptForConfig', () => {
 
   it('should render double-underscore private variables', async () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         foo: 'Hello world',
         bar: 123,
         rendered_foo: '{{ cookiecutter.foo | lower }}',
@@ -155,7 +155,7 @@ describe('promptForConfig', () => {
 
   it('should handle boolean variables with no_input', async () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         run_as_docker: true,
       },
     };
@@ -165,7 +165,7 @@ describe('promptForConfig', () => {
 
   it('should handle dict/object variables with no_input', async () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         project_name: 'Test',
         details: {
           key: 'value',
@@ -180,7 +180,7 @@ describe('promptForConfig', () => {
 
   it('should handle deep nested dicts with no_input', async () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         project_name: 'Slartibartfast',
         details: {
           key: 'value',
@@ -226,7 +226,7 @@ describe('promptForConfig', () => {
 
   it('should exclude __prompts__ from output', async () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         project_name: 'Test',
         __prompts__: { project_name: 'Project name' },
       },
@@ -238,7 +238,7 @@ describe('promptForConfig', () => {
 
   it('should throw UndefinedVariableInTemplateError on undefined var', async () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         foo: '{{cookiecutter.nope}}',
       },
     };
@@ -249,7 +249,7 @@ describe('promptForConfig', () => {
 
   it('should throw on undefined var in list choices', async () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         foo: ['123', '{{cookiecutter.nope}}', '456'],
       },
     };
@@ -260,7 +260,7 @@ describe('promptForConfig', () => {
 
   it('should throw on undefined var in dict key', async () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         foo: { '{{cookiecutter.nope}}': 'value' },
       },
     };
@@ -271,7 +271,7 @@ describe('promptForConfig', () => {
 
   it('should throw on undefined var in dict value', async () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         foo: { key: '{{cookiecutter.nope}}' },
       },
     };

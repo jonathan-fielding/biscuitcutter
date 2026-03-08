@@ -34,7 +34,7 @@ describe('dump', () => {
 
   it('should write context to replay file', () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         email: 'test@example.com',
         full_name: 'Test User',
         version: '0.1.0',
@@ -47,19 +47,19 @@ describe('dump', () => {
     expect(fs.existsSync(replayFile)).toBe(true);
 
     const content = JSON.parse(fs.readFileSync(replayFile, 'utf-8'));
-    expect(content.cookiecutter.email).toBe('test@example.com');
-    expect(content.cookiecutter.full_name).toBe('Test User');
+    expect(content.biscuitcutter.email).toBe('test@example.com');
+    expect(content.biscuitcutter.full_name).toBe('Test User');
   });
 
   it('should throw if context has no cookiecutter key', () => {
     expect(() => dump(tmpDir, 'template', { foo: 'bar' })).toThrow(
-      'Context is required to contain a cookiecutter key',
+      'Context is required to contain a biscuitcutter key',
     );
   });
 
   it('should create replay directory if it does not exist', () => {
     const replayDir = path.join(tmpDir, 'new-replay-dir');
-    const context = { cookiecutter: { key: 'value' } };
+    const context = { biscuitcutter: { key: 'value' } };
 
     dump(replayDir, 'template', context);
     expect(fs.existsSync(replayDir)).toBe(true);
@@ -81,7 +81,7 @@ describe('load', () => {
 
   it('should load context from replay file', () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         email: 'test@example.com',
         full_name: 'Test User',
       },
@@ -91,8 +91,8 @@ describe('load', () => {
     fs.writeFileSync(replayFile, JSON.stringify(context), 'utf-8');
 
     const loaded = load(tmpDir, 'my-template');
-    expect(loaded.cookiecutter.email).toBe('test@example.com');
-    expect(loaded.cookiecutter.full_name).toBe('Test User');
+    expect(loaded.biscuitcutter.email).toBe('test@example.com');
+    expect(loaded.biscuitcutter.full_name).toBe('Test User');
   });
 
   it('should throw if file does not contain cookiecutter key', () => {
@@ -100,7 +100,7 @@ describe('load', () => {
     fs.writeFileSync(replayFile, JSON.stringify({ foo: 'bar' }), 'utf-8');
 
     expect(() => load(tmpDir, 'bad')).toThrow(
-      'Context is required to contain a cookiecutter key',
+      'Context is required to contain a biscuitcutter key',
     );
   });
 
@@ -117,7 +117,7 @@ describe('load', () => {
 
   it('should roundtrip with dump', () => {
     const context = {
-      cookiecutter: {
+      biscuitcutter: {
         email: 'test@example.com',
         full_name: 'Test User',
         version: '1.0.0',

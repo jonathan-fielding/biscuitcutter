@@ -337,12 +337,12 @@ export async function promptForConfig(
 ): Promise<Record<string, any>> {
   const cookiecutterDict: Record<string, any> = {};
   const env = createEnvWithContext(context);
-  const prompts = context.cookiecutter.__prompts__ || {};
-  delete context.cookiecutter.__prompts__;
+  const prompts = context.biscuitcutter.__prompts__ || {};
+  delete context.biscuitcutter.__prompts__;
 
   // First pass: Handle simple and raw variables, plus choices
   let count = 0;
-  const allPrompts = Object.entries(context.cookiecutter);
+  const allPrompts = Object.entries(context.biscuitcutter);
   const visiblePrompts = allPrompts.filter(([k]) => !k.startsWith('_'));
   const size = visiblePrompts.length;
 
@@ -393,7 +393,7 @@ export async function promptForConfig(
   }
 
   // Second pass: handle the dictionaries
-  for (const [key, raw] of Object.entries(context.cookiecutter)) {
+  for (const [key, raw] of Object.entries(context.biscuitcutter)) {
     if (key.startsWith('_') && !key.startsWith('__')) {
       continue;
     }
@@ -432,11 +432,11 @@ export async function chooseNestedTemplate(
 ): Promise<string> {
   const cookiecutterDict: Record<string, any> = {};
   const env = createEnvWithContext(context);
-  const prompts = context.cookiecutter.__prompts__ || {};
-  delete context.cookiecutter.__prompts__;
+  const prompts = context.biscuitcutter.__prompts__ || {};
+  delete context.biscuitcutter.__prompts__;
 
   const key = 'templates';
-  const config = context.cookiecutter[key];
+  const config = context.biscuitcutter[key];
   let template: string;
 
   if (config && typeof config === 'object' && !Array.isArray(config)) {
@@ -446,7 +446,7 @@ export async function chooseNestedTemplate(
   } else {
     // Old style
     const oldKey = 'template';
-    const oldConfig = context.cookiecutter[oldKey] || [];
+    const oldConfig = context.biscuitcutter[oldKey] || [];
     const val = await promptChoiceForConfig(
       cookiecutterDict, env, oldKey, oldConfig, noInput, prompts, '',
     );

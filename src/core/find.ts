@@ -23,7 +23,7 @@ export function findTemplate(repoDir: string): string {
 
   for (const entry of entries) {
     if (
-      entry.includes('cookiecutter') &&
+      (entry.includes('cookiecutter') || entry.includes('biscuitcutter')) &&
       entry.includes(VARIABLE_START_STRING) &&
       entry.includes(VARIABLE_END_STRING)
     ) {

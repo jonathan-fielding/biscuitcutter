@@ -1,0 +1,11 @@
+{
+  "full_name": "Audrey M. Roy Greenfeld",
+  "email": "audreyroygreenfeld@example.com",
+  "github_username": "audreyfeldroy",
+  "project_name": "Fake Project Templated",
+  "repo_name": "{{ biscuitcutter.project_name|lower|replace(' ', '-') }}",
+  "project_short_description": "This is a fake project.",
+  "release_date": "2013-07-28",
+  "year": "2013",
+  "version": "0.1"
+}

@@ -10,7 +10,7 @@ default_context:
       - "second"
       - "third"
 ---
-cookiecutters_dir: "/home/example/some-path-to-templates"
+biscuitcutters_dir: "/home/example/some-path-to-templates"
 replay_dir: "/home/example/some-path-to-replay-files"
 abbreviations:
   helloworld: "https://github.com/hackebrot/helloworld"

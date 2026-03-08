@@ -6,7 +6,7 @@ from jinja2.parser import Parser
 
 
 class HelloExtension(Extension):
-    """Simple jinja2 extension for cookiecutter test purposes."""
+    """Simple jinja2 extension for biscuitcutter test purposes."""
 
     tags = {'hello'}
 

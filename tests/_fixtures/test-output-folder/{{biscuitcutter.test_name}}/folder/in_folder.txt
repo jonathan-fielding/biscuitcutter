@@ -1,0 +1,1 @@
+The color is {{ biscuitcutter.color }} and the letter is {{ biscuitcutter.letter }}.

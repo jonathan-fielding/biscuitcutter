@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import * as fs from 'fs';
 import { getLogger } from '../utils/log';
 import { getUserConfig } from '../config/config';
 import { InvalidModeError } from '../utils/exceptions';
@@ -83,7 +84,7 @@ export async function biscuitcutter(options: BiscuitCutterOptions): Promise<stri
   const [baseRepoDir, cleanupBaseRepoDir] = await determineRepoDir(
     template,
     configDict.abbreviations,
-    configDict.cookiecutters_dir,
+    configDict.biscuitcutters_dir,
     checkout,
     noInput,
     password,
@@ -111,7 +112,10 @@ export async function biscuitcutter(options: BiscuitCutterOptions): Promise<stri
     }
   }
 
-  const contextFile = path.join(repoDir, 'cookiecutter.json');
+  let contextFile = path.join(repoDir, 'biscuitcutter.json');
+  if (!fs.existsSync(contextFile)) {
+    contextFile = path.join(repoDir, 'cookiecutter.json');
+  }
   logger.debug('context_file is %s', contextFile);
 
   let context: Record<string, any>;
@@ -125,12 +129,12 @@ export async function biscuitcutter(options: BiscuitCutterOptions): Promise<stri
     );
     logger.debug('replayfile context: %s', JSON.stringify(contextFromReplayFile));
     const itemsForPrompting: Record<string, any> = {};
-    for (const [k, v] of Object.entries(context.cookiecutter)) {
-      if (!(k in contextFromReplayFile.cookiecutter)) {
+    for (const [k, v] of Object.entries(context.biscuitcutter)) {
+      if (!(k in contextFromReplayFile.biscuitcutter)) {
         itemsForPrompting[k] = v;
       }
     }
-    contextForPrompting = { cookiecutter: itemsForPrompting };
+    contextForPrompting = { biscuitcutter: itemsForPrompting };
     context = contextFromReplayFile;
     logger.debug('prompting context: %s', JSON.stringify(contextForPrompting));
   } else {
@@ -144,11 +148,11 @@ export async function biscuitcutter(options: BiscuitCutterOptions): Promise<stri
 
   // Preserve the original cookiecutter options
   context._cookiecutter = Object.fromEntries(
-    Object.entries(context.cookiecutter).filter(([k]) => !k.startsWith('_')),
+    Object.entries(context.biscuitcutter).filter(([k]) => !k.startsWith('_')),
   );
 
   // Check for nested templates
-  const contextKeys = new Set(Object.keys(context.cookiecutter));
+  const contextKeys = new Set(Object.keys(context.biscuitcutter));
   if (contextKeys.has('template') || contextKeys.has('templates')) {
     const nestedTemplate = await chooseNestedTemplate(
       context,
@@ -162,18 +166,18 @@ export async function biscuitcutter(options: BiscuitCutterOptions): Promise<stri
   }
 
   // Prompt user for config
-  if (contextForPrompting.cookiecutter && Object.keys(contextForPrompting.cookiecutter).length > 0) {
+  if (contextForPrompting.biscuitcutter && Object.keys(contextForPrompting.biscuitcutter).length > 0) {
     const promptedConfig = await promptForConfig(contextForPrompting, noInput);
-    Object.assign(context.cookiecutter, promptedConfig);
+    Object.assign(context.biscuitcutter, promptedConfig);
   }
 
   logger.debug('context is %s', JSON.stringify(context));
 
   // Include template dir or url in the context dict
-  context.cookiecutter._template = template;
-  context.cookiecutter._output_dir = path.resolve(outputDir);
-  context.cookiecutter._repo_dir = repoDir;
-  context.cookiecutter._checkout = checkout;
+  context.biscuitcutter._template = template;
+  context.biscuitcutter._output_dir = path.resolve(outputDir);
+  context.biscuitcutter._repo_dir = repoDir;
+  context.biscuitcutter._checkout = checkout;
 
   dump(configDict.replay_dir, templateName, context);
 
@@ -193,7 +197,7 @@ export async function biscuitcutter(options: BiscuitCutterOptions): Promise<stri
     const commit = isGitRepo(baseRepoDir) ? getLatestCommit(baseRepoDir) : null;
     // Filter out private variables (they're machine-specific and not useful for tracking)
     const filteredContext: Record<string, any> = {};
-    for (const [key, value] of Object.entries(context.cookiecutter)) {
+    for (const [key, value] of Object.entries(context.biscuitcutter)) {
       if (!key.startsWith('_')) {
         filteredContext[key] = value;
       }

@@ -20,7 +20,7 @@ export const BUILTIN_ABBREVIATIONS: Record<string, string> = {
 };
 
 export interface BiscuitCutterConfig {
-  cookiecutters_dir: string;
+  biscuitcutters_dir: string;
   replay_dir: string;
   default_context: Record<string, any>;
   abbreviations: Record<string, string>;
@@ -28,7 +28,7 @@ export interface BiscuitCutterConfig {
 }
 
 export const DEFAULT_CONFIG: BiscuitCutterConfig = {
-  cookiecutters_dir: path.join(os.homedir(), '.biscuitcutters/'),
+  biscuitcutters_dir: path.join(os.homedir(), '.biscuitcutters/'),
   replay_dir: path.join(os.homedir(), '.biscuitcutter_replay/'),
   default_context: {},
   abbreviations: { ...BUILTIN_ABBREVIATIONS },
@@ -109,7 +109,7 @@ export function getConfig(configPath: string): BiscuitCutterConfig {
   const configDict = mergeConfigs(DEFAULT_CONFIG, yamlDict) as BiscuitCutterConfig;
 
   configDict.replay_dir = expandPath(configDict.replay_dir);
-  configDict.cookiecutters_dir = expandPath(configDict.cookiecutters_dir);
+  configDict.biscuitcutters_dir = expandPath(configDict.biscuitcutters_dir);
 
   return configDict;
 }

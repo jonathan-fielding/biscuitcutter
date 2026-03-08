@@ -25,8 +25,8 @@ export function dump(
 ): void {
   makeSurePathExists(replayDir);
 
-  if (!('cookiecutter' in context)) {
-    throw new Error('Context is required to contain a cookiecutter key');
+  if (!('biscuitcutter' in context)) {
+    throw new Error('Context is required to contain a biscuitcutter key');
   }
 
   const replayFile = getFileName(replayDir, templateName);
@@ -44,8 +44,8 @@ export function load(
   const content = fs.readFileSync(replayFile, 'utf-8');
   const context = JSON.parse(content);
 
-  if (!('cookiecutter' in context)) {
-    throw new Error('Context is required to contain a cookiecutter key');
+  if (!('biscuitcutter' in context)) {
+    throw new Error('Context is required to contain a biscuitcutter key');
   }
 
   return context;

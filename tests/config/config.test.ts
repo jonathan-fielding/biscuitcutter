@@ -50,7 +50,7 @@ describe('getConfig', () => {
     expect(config.default_context.full_name).toBe('Firstname Lastname');
     expect(config.default_context.email).toBe('firstname.lastname@gmail.com');
     expect(config.default_context.github_username).toBe('example');
-    expect(config.cookiecutters_dir).toBe('/home/example/some-path-to-templates');
+    expect(config.biscuitcutters_dir).toBe('/home/example/some-path-to-templates');
     expect(config.replay_dir).toBe('/home/example/some-path-to-replay-files');
     expect(config.abbreviations.helloworld).toBe(
       'https://github.com/hackebrot/helloworld',
@@ -62,7 +62,7 @@ describe('getConfig', () => {
     const config = getConfig(configPath);
     expect(config.default_context.full_name).toBe('Firstname Lastname');
     // Should have default values for unset keys
-    expect(config.cookiecutters_dir).toBe(DEFAULT_CONFIG.cookiecutters_dir);
+    expect(config.biscuitcutters_dir).toBe(DEFAULT_CONFIG.biscuitcutters_dir);
     expect(config.replay_dir).toBe(DEFAULT_CONFIG.replay_dir);
   });
 
@@ -81,7 +81,7 @@ describe('getConfig', () => {
     const configPath = path.join(FIXTURES_DIR, 'empty-config.yaml');
     const config = getConfig(configPath);
     // Should get defaults
-    expect(config.cookiecutters_dir).toBe(DEFAULT_CONFIG.cookiecutters_dir);
+    expect(config.biscuitcutters_dir).toBe(DEFAULT_CONFIG.biscuitcutters_dir);
     expect(config.replay_dir).toBe(DEFAULT_CONFIG.replay_dir);
   });
 
@@ -93,7 +93,7 @@ describe('getConfig', () => {
   it('should expand ~ in paths', () => {
     const configPath = path.join(FIXTURES_DIR, 'config-expand-user.yaml');
     const config = getConfig(configPath);
-    expect(config.cookiecutters_dir).toBe(path.join(os.homedir(), 'templates'));
+    expect(config.biscuitcutters_dir).toBe(path.join(os.homedir(), 'templates'));
     expect(config.replay_dir).toBe(path.join(os.homedir(), 'replay-files'));
   });
 
@@ -103,7 +103,7 @@ describe('getConfig', () => {
     try {
       const configPath = path.join(FIXTURES_DIR, 'config-expand-vars.yaml');
       const config = getConfig(configPath);
-      expect(config.cookiecutters_dir).toBe('/tmp/cookies/templates');
+      expect(config.biscuitcutters_dir).toBe('/tmp/cookies/templates');
       expect(config.replay_dir).toBe('/tmp/cookies/replay-files');
     } finally {
       if (originalEnv === undefined) {
@@ -118,7 +118,7 @@ describe('getConfig', () => {
 describe('getUserConfig', () => {
   it('should return defaults when defaultConfig is true', () => {
     const config = getUserConfig(null, true);
-    expect(config.cookiecutters_dir).toBe(DEFAULT_CONFIG.cookiecutters_dir);
+    expect(config.biscuitcutters_dir).toBe(DEFAULT_CONFIG.biscuitcutters_dir);
     expect(config.replay_dir).toBe(DEFAULT_CONFIG.replay_dir);
     expect(config.default_context).toEqual({});
   });
@@ -128,7 +128,7 @@ describe('getUserConfig', () => {
       default_context: { foo: 'bar' },
     });
     expect(config.default_context).toEqual({ foo: 'bar' });
-    expect(config.cookiecutters_dir).toBe(DEFAULT_CONFIG.cookiecutters_dir);
+    expect(config.biscuitcutters_dir).toBe(DEFAULT_CONFIG.biscuitcutters_dir);
   });
 
   it('should load config from a given file', () => {

@@ -13,7 +13,7 @@ describe('findTemplate', () => {
     const repoDir = path.join(FIXTURES_DIR, 'fake-repo-pre');
     const template = findTemplate(repoDir);
     expect(template).toBe(
-      path.join(repoDir, '{{cookiecutter.repo_name}}'),
+      path.join(repoDir, '{{biscuitcutter.repo_name}}'),
     );
   });
 
@@ -35,6 +35,6 @@ describe('findTemplate', () => {
   it('should find template in ordinary repo', () => {
     const repoDir = path.join(FIXTURES_DIR, 'test-generate-files');
     const template = findTemplate(repoDir);
-    expect(template).toContain('input{{cookiecutter.food}}');
+    expect(template).toContain('input{{biscuitcutter.food}}');
   });
 });

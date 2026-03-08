@@ -113,7 +113,7 @@ describe('makeExecutable', () => {
 
 describe('createEnvWithContext', () => {
   it('should create a nunjucks environment from context', () => {
-    const env = createEnvWithContext({ cookiecutter: { name: 'test' } });
+    const env = createEnvWithContext({ biscuitcutter: { name: 'test' } });
     expect(env).toBeDefined();
     const result = env.renderString('{{ name }}', { name: 'World' });
     expect(result).toBe('World');

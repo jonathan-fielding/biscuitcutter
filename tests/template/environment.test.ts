@@ -34,7 +34,7 @@ describe('Environment', () => {
   it('should support custom jinja2 env vars from context', () => {
     const env = createStrictEnvironment({
       context: {
-        cookiecutter: {
+        biscuitcutter: {
           _jinja2_env_vars: {
             trimBlocks: true,
             lstripBlocks: true,
@@ -48,7 +48,7 @@ describe('Environment', () => {
   it('should warn about Python extensions but not crash', () => {
     const env = createStrictEnvironment({
       context: {
-        cookiecutter: {
+        biscuitcutter: {
           _extensions: ['jinja2_time.TimeExtension'],
         },
       },

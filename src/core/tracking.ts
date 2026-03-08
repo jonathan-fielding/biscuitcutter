@@ -89,7 +89,7 @@ export interface CheckResult {
 export interface UpdateOptions {
   projectDir?: string;
   templatePath?: string | null;
-  cookiecutterInput?: boolean;
+  biscuitcutterInput?: boolean;
   refreshPrivateVariables?: boolean;
   skipApplyAsk?: boolean;
   skipUpdate?: boolean;
@@ -253,7 +253,7 @@ function validateCookiecutterTemplate(templateDir: string): void {
     );
   });
 
-  if (!hasTemplate && !fs.existsSync(path.join(templateDir, 'cookiecutter.json'))) {
+  if (!hasTemplate && !fs.existsSync(path.join(templateDir, 'biscuitcutter.json')) && !fs.existsSync(path.join(templateDir, 'cookiecutter.json'))) {
     throw new UnableToFindCookiecutterTemplateError(templateDir);
   }
 }
@@ -318,7 +318,7 @@ interface GenerateTemplateOptions {
   repoDir: string;
   templateState: TemplateState;
   projectDir: string;
-  cookiecutterInput?: boolean;
+  biscuitcutterInput?: boolean;
   checkout?: string | null;
   deletedPaths?: Set<string>;
   updateDeletedPaths?: boolean;
@@ -330,7 +330,7 @@ function generateTemplateForDiff(options: GenerateTemplateOptions): Record<strin
     repoDir,
     templateState,
     projectDir,
-    cookiecutterInput = false,
+    biscuitcutterInput = false,
     checkout,
     deletedPaths = new Set<string>(),
     updateDeletedPaths = false,
@@ -352,10 +352,13 @@ function generateTemplateForDiff(options: GenerateTemplateOptions): Record<strin
   const targetCommit = checkout || getLatestCommit(repoDir);
   validateCookiecutterTemplate(innerDir);
 
-  const contextFile = path.join(innerDir, 'cookiecutter.json');
+  let contextFile = path.join(innerDir, 'biscuitcutter.json');
+  if (!fs.existsSync(contextFile)) {
+    contextFile = path.join(innerDir, 'cookiecutter.json');
+  }
   const newContext = generateContext(contextFile, null, extraContext);
-  newContext.cookiecutter._template = templateState.template;
-  newContext.cookiecutter._commit = targetCommit;
+  newContext.biscuitcutter._template = templateState.template;
+  newContext.biscuitcutter._commit = targetCommit;
 
   fs.mkdirSync(outputDir, { recursive: true });
 
@@ -498,16 +501,19 @@ export async function create(options: CreateOptions): Promise<string> {
     }
 
     const configDict = getUserConfig(configFile, defaultConfig);
-    const contextFile = path.join(cookiecutterTemplateDir, 'cookiecutter.json');
+    let contextFile = path.join(cookiecutterTemplateDir, 'biscuitcutter.json');
+    if (!fs.existsSync(contextFile)) {
+      contextFile = path.join(cookiecutterTemplateDir, 'cookiecutter.json');
+    }
     const context = generateContext(contextFile, configDict.default_context, extraContext);
 
     if (!noInput) {
       const promptedConfig = await promptForConfig(context, false);
-      Object.assign(context.cookiecutter, promptedConfig);
+      Object.assign(context.biscuitcutter, promptedConfig);
     }
 
-    context.cookiecutter._template = templateGitUrl;
-    context.cookiecutter._commit = lastCommit;
+    context.biscuitcutter._template = templateGitUrl;
+    context.biscuitcutter._commit = lastCommit;
 
     const projectDir = generateFiles(
       cookiecutterTemplateDir,
@@ -521,7 +527,7 @@ export async function create(options: CreateOptions): Promise<string> {
 
     // Filter out private variables (they're machine-specific)
     const filteredContext: Record<string, any> = {};
-    for (const [key, value] of Object.entries(context.cookiecutter)) {
+    for (const [key, value] of Object.entries(context.biscuitcutter)) {
       if (!key.startsWith('_')) {
         filteredContext[key] = value;
       }
@@ -604,7 +610,7 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
   const {
     projectDir = '.',
     templatePath = null,
-    cookiecutterInput = false,
+    biscuitcutterInput = false,
     refreshPrivateVariables = false,
     skipApplyAsk = true,
     skipUpdate = false,
@@ -657,7 +663,7 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
 
     if (
       (!extraContext || Object.keys(extraContext).length === 0) &&
-      !cookiecutterInput &&
+      !biscuitcutterInput &&
       !refreshPrivateVariables
     ) {
       if (isProjectUpdated(repoDir, templateState.commit, latestCommit, strict)) {
@@ -677,7 +683,7 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
       repoDir,
       templateState: workingState,
       projectDir,
-      cookiecutterInput: false,
+      biscuitcutterInput: false,
       checkout: workingState.commit,
       deletedPaths,
       updateDeletedPaths: true,
@@ -697,7 +703,7 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
       repoDir,
       templateState: workingState,
       projectDir,
-      cookiecutterInput,
+      biscuitcutterInput,
       checkout: latestCommit,
       deletedPaths,
       updateDeletedPaths: false,
@@ -729,7 +735,7 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
     workingState.checkout = checkout;
     // Filter out private variables (they're machine-specific)
     const filteredContext: Record<string, any> = {};
-    for (const [key, value] of Object.entries(newContext.cookiecutter)) {
+    for (const [key, value] of Object.entries(newContext.biscuitcutter)) {
       if (!key.startsWith('_')) {
         filteredContext[key] = value;
       }
@@ -838,16 +844,19 @@ export async function link(options: LinkOptions): Promise<boolean> {
     validateCookiecutterTemplate(cookiecutterTemplateDir);
 
     const configDict = getUserConfig(configFile, defaultConfig);
-    const contextFile = path.join(cookiecutterTemplateDir, 'cookiecutter.json');
+    let contextFile = path.join(cookiecutterTemplateDir, 'biscuitcutter.json');
+    if (!fs.existsSync(contextFile)) {
+      contextFile = path.join(cookiecutterTemplateDir, 'cookiecutter.json');
+    }
     const context = generateContext(contextFile, configDict.default_context, extraContext);
 
     if (!noInput) {
       const promptedConfig = await promptForConfig(context, false);
-      Object.assign(context.cookiecutter, promptedConfig);
+      Object.assign(context.biscuitcutter, promptedConfig);
     }
 
-    context.cookiecutter._template = templateGitUrl;
-    context.cookiecutter._commit = lastCommit;
+    context.biscuitcutter._template = templateGitUrl;
+    context.biscuitcutter._commit = lastCommit;
 
     let useCommit = lastCommit;
 
@@ -873,7 +882,7 @@ export async function link(options: LinkOptions): Promise<boolean> {
 
     // Filter out private variables (they're machine-specific)
     const filteredContext: Record<string, any> = {};
-    for (const [key, value] of Object.entries(context.cookiecutter)) {
+    for (const [key, value] of Object.entries(context.biscuitcutter)) {
       if (!key.startsWith('_')) {
         filteredContext[key] = value;
       }

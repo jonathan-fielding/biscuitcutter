@@ -58,11 +58,12 @@ export function expandAbbreviations(
 }
 
 /**
- * Determine if `repoDirectory` contains a `cookiecutter.json` file.
+ * Determine if `repoDirectory` contains a `biscuitcutter.json` or `cookiecutter.json` file.
  */
 export function repositoryHasCookiecutterJson(repoDirectory: string): boolean {
   const dirExists = fs.existsSync(repoDirectory) && fs.statSync(repoDirectory).isDirectory();
-  const configExists = fs.existsSync(path.join(repoDirectory, 'cookiecutter.json'));
+  const configExists = fs.existsSync(path.join(repoDirectory, 'biscuitcutter.json')) || 
+                       fs.existsSync(path.join(repoDirectory, 'cookiecutter.json'));
   return dirExists && configExists;
 }
 
