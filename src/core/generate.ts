@@ -63,8 +63,7 @@ export function isCopyOnlyPath(
   context: Record<string, any>,
 ): boolean {
   try {
-    const dontRender: string[] =
-      context.biscuitcutter?._copy_without_render || [];
+    const dontRender: string[] = context.biscuitcutter?._copy_without_render || [];
     for (const pattern of dontRender) {
       if (minimatch(filePath, pattern)) {
         return true;
@@ -85,7 +84,7 @@ function minimatch(filepath: string, pattern: string): boolean {
     .replace(/[.+^${}()|[\]\\]/g, '\\$&')
     .replace(/\*/g, '.*')
     .replace(/\?/g, '.');
-  regexStr = '^' + regexStr + '$';
+  regexStr = `^${regexStr}$`;
   return new RegExp(regexStr).test(filepath);
 }
 
@@ -121,8 +120,8 @@ export function applyOverwritesToContext(
           context[variable] = overwrite;
         } else {
           throw new Error(
-            `${JSON.stringify(overwrite)} provided for multi-choice variable ` +
-              `${variable}, but valid choices are ${JSON.stringify(contextValue)}`,
+            `${JSON.stringify(overwrite)} provided for multi-choice variable `
+              + `${variable}, but valid choices are ${JSON.stringify(contextValue)}`,
           );
         }
       } else {
@@ -133,17 +132,17 @@ export function applyOverwritesToContext(
           contextValue.unshift(overwrite);
         } else {
           throw new Error(
-            `${overwrite} provided for choice variable ` +
-              `${variable}, but the choices are ${JSON.stringify(contextValue)}.`,
+            `${overwrite} provided for choice variable `
+              + `${variable}, but the choices are ${JSON.stringify(contextValue)}.`,
           );
         }
       }
     } else if (
-      typeof contextValue === 'object' &&
-      contextValue !== null &&
-      typeof overwrite === 'object' &&
-      overwrite !== null &&
-      !Array.isArray(overwrite)
+      typeof contextValue === 'object'
+      && contextValue !== null
+      && typeof overwrite === 'object'
+      && overwrite !== null
+      && !Array.isArray(overwrite)
     ) {
       applyOverwritesToContext(contextValue, overwrite, true);
       context[variable] = contextValue;
@@ -152,8 +151,8 @@ export function applyOverwritesToContext(
         context[variable] = processYesNoResponse(overwrite);
       } catch {
         throw new Error(
-          `${overwrite} provided for variable ` +
-            `${variable} could not be converted to a boolean.`,
+          `${overwrite} provided for variable `
+            + `${variable} could not be converted to a boolean.`,
         );
       }
     } else {
@@ -181,20 +180,20 @@ export function generateContext(
   } catch (e: any) {
     const fullPath = path.resolve(contextFile);
     throw new ContextDecodingError(
-      `JSON decoding error while loading '${fullPath}'. ` +
-        `Decoding error details: '${e.message}'`,
+      `JSON decoding error while loading '${fullPath}'. `
+        + `Decoding error details: '${e.message}'`,
     );
   }
 
   // Add the object to the context dictionary
   const fileName = path.basename(contextFile);
   let fileStem = fileName.split('.')[0];
-  
+
   // Map legacy cookiecutter templates to biscuitcutter context
   if (fileStem === 'cookiecutter') {
     fileStem = 'biscuitcutter';
   }
-  
+
   context[fileStem] = obj;
 
   // Overwrite context variable defaults with the default context
@@ -436,8 +435,7 @@ export function generateFiles(
   projectDir = path.resolve(projectDir);
   logger.debug('Project directory is %s', projectDir);
 
-  const deleteProjectOnFailure =
-    outputDirectoryCreated && !keepProjectOnFailure;
+  const deleteProjectOnFailure = outputDirectoryCreated && !keepProjectOnFailure;
 
   if (acceptHooks) {
     runHookFromRepoDir(
@@ -453,7 +451,7 @@ export function generateFiles(
     // Set up nunjucks to load templates from current dir and ../templates
     const renderEnv = createStrictEnvironment({
       context,
-      searchPaths: ['.', '../templates']
+      searchPaths: ['.', '../templates'],
     });
 
     // Walk the template directory

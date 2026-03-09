@@ -1,7 +1,9 @@
 /**
  * Tests for BiscuitCutter extensions (default filters and globals).
  */
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import {
+  describe, it, expect, vi, afterEach,
+} from 'vitest';
 import { createStrictEnvironment } from '../../src/template/environment';
 
 describe('Default Extensions', () => {
