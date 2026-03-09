@@ -60,6 +60,34 @@ export function createStrictEnvironment(options: EnvironmentOptions = {}): nunju
     env.addGlobal('cookiecutter', ctx.biscuitcutter);
   }
 
+  // Wrap renderString to safely polyfill Python's global `.replace()` and zero-arg `.split()`
+  const originalRenderString = env.renderString.bind(env);
+  env.renderString = function (str: string, context?: any) {
+    const originalReplace = String.prototype.replace;
+    const originalSplit = String.prototype.split;
+    try {
+      (String.prototype as any).replace = function (this: string, ...args: any[]) {
+        const [searchValue, ...rest] = args;
+        if (typeof searchValue === 'string') {
+          return this.split(searchValue).join(rest[0] as string);
+        }
+        return originalReplace.apply(this, args as any);
+      };
+
+      (String.prototype as any).split = function (this: string, separator?: string | RegExp, limit?: number) {
+        if (separator === undefined) {
+          return this.trim().split(/\s+/);
+        }
+        return originalSplit.call(this, separator as any, limit);
+      };
+
+      return originalRenderString(str, context);
+    } finally {
+      (String.prototype as any).replace = originalReplace;
+      (String.prototype as any).split = originalSplit;
+    }
+  } as any;
+
   return env;
 }
 

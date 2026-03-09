@@ -5,10 +5,75 @@
 import * as nunjucks from 'nunjucks';
 import { randomUUID } from 'crypto';
 
+let polyfillsApplied = false;
+
+function applyPythonStringPolyfills(): void {
+  if (polyfillsApplied) return;
+
+  const defineMethod = (name: string, fn: any) => {
+    if (!String.prototype.hasOwnProperty(name)) {
+      Object.defineProperty(String.prototype, name, {
+        value: fn,
+        writable: true,
+        configurable: true,
+        enumerable: false,
+      });
+    }
+  };
+
+  defineMethod('lower', function (this: string) { return this.toLowerCase(); });
+  defineMethod('upper', function (this: string) { return this.toUpperCase(); });
+  defineMethod('capitalize', function (this: string) { 
+    return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase(); 
+  });
+  defineMethod('title', function (this: string) {
+    return this.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase());
+  });
+  defineMethod('strip', function (this: string, chars?: string) {
+    if (chars) {
+      const escaped = chars.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return this.replace(new RegExp(`^[${escaped}]+|[${escaped}]+$`, 'g'), '');
+    }
+    return this.trim();
+  });
+  defineMethod('lstrip', function (this: string, chars?: string) {
+    if (chars) {
+      const escaped = chars.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return this.replace(new RegExp(`^[${escaped}]+`, 'g'), '');
+    }
+    return this.trimStart();
+  });
+  defineMethod('rstrip', function (this: string, chars?: string) {
+    if (chars) {
+      const escaped = chars.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return this.replace(new RegExp(`[${escaped}]+$`, 'g'), '');
+    }
+    return this.trimEnd();
+  });
+  defineMethod('startswith', function (this: string, str: string) { return this.startsWith(str); });
+  defineMethod('endswith', function (this: string, str: string) { return this.endsWith(str); });
+
+  // Jinja2 .split() without arguments splits by whitespace and filters out empty strings.
+  const originalSplit = String.prototype.split;
+  defineMethod('split_jinja', function (this: string, separator?: string | RegExp, limit?: number) {
+    if (separator === undefined) {
+      return this.trim().split(/\s+/);
+    }
+    return originalSplit.call(this, separator as any, limit);
+  });
+  
+  // We can't safely override String.prototype.split permanently globally because it breaks JS apps.
+  // We handle replace & split inside the env.renderString proxy wrapper safely!
+
+  polyfillsApplied = true;
+}
+
 /**
  * Register all default extensions (filters and globals) on the given environment.
  */
 export function registerDefaultExtensions(env: nunjucks.Environment): void {
+  applyPythonStringPolyfills();
+
   // Jsonify filter
   env.addFilter('jsonify', (obj: any, indent: number = 4) => {
     return JSON.stringify(obj, Object.keys(obj).sort(), indent);
