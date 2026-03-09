@@ -1,5 +1,11 @@
 # biscuitcutter
 
+## 0.0.5
+
+### Patch Changes
+
+- 490db56: enable support for {% raw %} sections
+
 ## 0.0.4
 
 ### Patch Changes
