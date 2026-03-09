@@ -16,7 +16,7 @@ describe('generateContext', () => {
     const contextFile = path.join(CONTEXT_DIR, 'test.json');
     const context = generateContext(contextFile);
     expect(context).toHaveProperty('test');
-    expect(context.test).toEqual({ '1': 2, some_key: 'some_val' });
+    expect(context.test).toEqual({ 1: 2, some_key: 'some_val' });
   });
 
   it('should use the filename stem as context key', () => {
@@ -125,9 +125,7 @@ describe('applyOverwritesToContext', () => {
 
   it('should throw on invalid choice overwrite', () => {
     const ctx = createTemplateContext();
-    expect(() =>
-      applyOverwritesToContext(ctx, { orientation: 'foobar' }),
-    ).toThrow();
+    expect(() => applyOverwritesToContext(ctx, { orientation: 'foobar' })).toThrow();
   });
 
   it('should set multichoice values', () => {
@@ -138,16 +136,12 @@ describe('applyOverwritesToContext', () => {
 
   it('should throw on invalid multichoice values', () => {
     const ctx = createTemplateContext();
-    expect(() =>
-      applyOverwritesToContext(ctx, { deployment_regions: ['na'] }),
-    ).toThrow();
+    expect(() => applyOverwritesToContext(ctx, { deployment_regions: ['na'] })).toThrow();
   });
 
   it('should throw on invalid additional multichoice values', () => {
     const ctx = createTemplateContext();
-    expect(() =>
-      applyOverwritesToContext(ctx, { deployment_regions: ['eu', 'na'] }),
-    ).toThrow();
+    expect(() => applyOverwritesToContext(ctx, { deployment_regions: ['eu', 'na'] })).toThrow();
   });
 
   it('should overwrite in nested dictionaries', () => {
@@ -195,9 +189,7 @@ describe('applyOverwritesToContext', () => {
 
     it('should throw on invalid boolean string', () => {
       const ctx: Record<string, any> = { key: true };
-      expect(() =>
-        applyOverwritesToContext(ctx, { key: 'invalid' }),
-      ).toThrow();
+      expect(() => applyOverwritesToContext(ctx, { key: 'invalid' })).toThrow();
     });
   });
 });

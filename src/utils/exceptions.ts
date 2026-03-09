@@ -154,6 +154,7 @@ export class FailedHookError extends BiscuitCutterError {
  */
 export class UndefinedVariableInTemplateError extends BiscuitCutterError {
   public error: Error;
+
   public context: Record<string, any>;
 
   constructor(message: string, error: Error, context: Record<string, any>) {
@@ -165,9 +166,9 @@ export class UndefinedVariableInTemplateError extends BiscuitCutterError {
 
   toString(): string {
     return (
-      `${this.message}. ` +
-      `Error message: ${this.error.message}. ` +
-      `Context: ${JSON.stringify(this.context)}`
+      `${this.message}. `
+      + `Error message: ${this.error.message}. `
+      + `Context: ${JSON.stringify(this.context)}`
     );
   }
 }
@@ -304,6 +305,7 @@ export class DirtyGitRepositoryError extends BiscuitCutterError {
  */
 export class PathTraversalError extends BiscuitCutterError {
   public attemptedPath: string;
+
   public boundaryDir: string;
 
   constructor(attemptedPath: string, boundaryDir: string) {

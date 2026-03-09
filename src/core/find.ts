@@ -23,9 +23,9 @@ export function findTemplate(repoDir: string): string {
 
   for (const entry of entries) {
     if (
-      (entry.includes('cookiecutter') || entry.includes('biscuitcutter')) &&
-      entry.includes(VARIABLE_START_STRING) &&
-      entry.includes(VARIABLE_END_STRING)
+      (entry.includes('cookiecutter') || entry.includes('biscuitcutter'))
+      && entry.includes(VARIABLE_START_STRING)
+      && entry.includes(VARIABLE_END_STRING)
     ) {
       const projectTemplate = path.join(repoDir, entry);
       logger.debug('The project template appears to be %s', projectTemplate);

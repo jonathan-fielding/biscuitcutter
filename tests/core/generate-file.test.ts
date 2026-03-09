@@ -1,7 +1,9 @@
 /**
  * Tests for BiscuitCutter generate file functionality.
  */
-import { describe, it, expect, afterEach, beforeEach } from 'vitest';
+import {
+  describe, it, expect, afterEach, beforeEach,
+} from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';

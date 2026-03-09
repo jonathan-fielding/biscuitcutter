@@ -9,8 +9,6 @@ import * as nunjucks from 'nunjucks';
 import { UndefinedVariableInTemplateError } from '../utils/exceptions';
 import { createEnvWithContext, rmtree } from '../utils/utils';
 
-
-
 /**
  * Prompt user for variable and return the entered value or given default.
  */
@@ -20,36 +18,33 @@ export async function readUserVariable(
   prompts?: Record<string, any>,
   prefix: string = '',
 ): Promise<any> {
-  const question =
-    prompts && varName in prompts && prompts[varName]
-      ? prompts[varName]
-      : varName;
+  const question = prompts && varName in prompts && prompts[varName]
+    ? prompts[varName]
+    : varName;
 
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
 
-  const ask = (): Promise<any> => {
-    return new Promise<any>((resolve) => {
-      // If default value is null, it's a required field (no default suffix).
-      const isRequired = defaultValue === null;
-      const defaultSuffix = isRequired ? '' : (defaultValue !== undefined ? ` [${defaultValue}]` : '');
-      
-      rl.question(`${prefix}${question}${defaultSuffix}: `, (answer) => {
-        if (!answer) {
-          if (isRequired) {
-            console.log(`\nError: '${varName}' is required and cannot be empty.`);
-            resolve(ask());
-            return;
-          }
-          resolve(defaultValue);
-        } else {
-          resolve(answer);
+  const ask = (): Promise<any> => new Promise<any>((resolve) => {
+    // If default value is null, it's a required field (no default suffix).
+    const isRequired = defaultValue === null;
+    const defaultSuffix = isRequired ? '' : (defaultValue !== undefined ? ` [${defaultValue}]` : '');
+
+    rl.question(`${prefix}${question}${defaultSuffix}: `, (answer) => {
+      if (!answer) {
+        if (isRequired) {
+          console.log(`\nError: '${varName}' is required and cannot be empty.`);
+          resolve(ask());
+          return;
         }
-      });
+        resolve(defaultValue);
+      } else {
+        resolve(answer);
+      }
     });
-  };
+  });
 
   const result = await ask();
   rl.close();
@@ -68,10 +63,9 @@ export async function readUserYesNo(
   prompts?: Record<string, any>,
   prefix: string = '',
 ): Promise<boolean> {
-  const question =
-    prompts && varName in prompts && prompts[varName]
-      ? prompts[varName]
-      : varName;
+  const question = prompts && varName in prompts && prompts[varName]
+    ? prompts[varName]
+    : varName;
 
   const rl = readline.createInterface({
     input: process.stdin,
@@ -210,10 +204,9 @@ export async function readUserDict(
     throw new TypeError('Default value must be a dict/object');
   }
 
-  const question =
-    prompts && varName in prompts && prompts[varName]
-      ? prompts[varName]
-      : varName;
+  const question = prompts && varName in prompts && prompts[varName]
+    ? prompts[varName]
+    : varName;
 
   const rl = readline.createInterface({
     input: process.stdin,
@@ -316,9 +309,7 @@ export async function promptChoiceForConfig(
   prompts?: Record<string, any>,
   prefix: string = '',
 ): Promise<string> {
-  const renderedOptions = options.map((raw) =>
-    renderVariable(env, raw, cookiecutterDict),
-  );
+  const renderedOptions = options.map((raw) => renderVariable(env, raw, cookiecutterDict));
   if (noInput) {
     if (renderedOptions.length === 0) {
       throw new Error('The list of choices is empty');
@@ -364,9 +355,7 @@ export async function promptForConfig(
     try {
       if (Array.isArray(raw)) {
         // Choice variable
-        const val = await promptChoiceForConfig(
-          cookiecutterDict, env, key, raw, noInput, prompts, prefix,
-        );
+        const val = await promptChoiceForConfig(cookiecutterDict, env, key, raw, noInput, prompts, prefix);
         cookiecutterDict[key] = val;
       } else if (typeof raw === 'boolean') {
         // Boolean variable
@@ -447,9 +436,7 @@ export async function chooseNestedTemplate(
     // Old style
     const oldKey = 'template';
     const oldConfig = context.biscuitcutter[oldKey] || [];
-    const val = await promptChoiceForConfig(
-      cookiecutterDict, env, oldKey, oldConfig, noInput, prompts, '',
-    );
+    const val = await promptChoiceForConfig(cookiecutterDict, env, oldKey, oldConfig, noInput, prompts, '');
     const match = String(val).match(/\((.+)\)/);
     template = match ? match[1] : '';
   }

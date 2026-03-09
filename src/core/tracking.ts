@@ -165,7 +165,7 @@ export function readTemplateState(projectDir: string): TemplateState {
  */
 export function writeTemplateState(projectDir: string, state: TemplateState): void {
   const stateFile = path.join(projectDir, STATE_FILE);
-  const content = JSON.stringify(state, null, 2) + '\n';
+  const content = `${JSON.stringify(state, null, 2)}\n`;
   fs.writeFileSync(stateFile, content, 'utf-8');
 }
 
@@ -249,10 +249,10 @@ function validateCookiecutterTemplate(templateDir: string): void {
   const hasTemplate = entries.some((entry) => {
     const fullPath = path.join(templateDir, entry);
     return (
-      fs.statSync(fullPath).isDirectory() &&
-      entry.includes('cookiecutter') &&
-      entry.includes('{{') &&
-      entry.includes('}}')
+      fs.statSync(fullPath).isDirectory()
+      && entry.includes('cookiecutter')
+      && entry.includes('{{')
+      && entry.includes('}}')
     );
   });
 
@@ -291,7 +291,7 @@ function removePaths(rootDir: string, pathsToRemove: Set<string>): void {
   for (const pathToRemove of pathsToRemove) {
     if (pathToRemove.includes('*')) {
       const pattern = new RegExp(
-        '^' + pathToRemove.replace(/\*/g, '.*').replace(/\?/g, '.') + '$',
+        `^${pathToRemove.replace(/\*/g, '.*').replace(/\?/g, '.')}$`,
       );
 
       function removeMatching(dir: string, relativePath: string = ''): void {
@@ -411,10 +411,8 @@ function copyMatchingFiles(templateDir: string, projectDir: string, destDir: str
           }
           walkAndCopy(templatePath, projectPath, destPath);
         }
-      } else {
-        if (fs.existsSync(projectPath)) {
-          fsExtra.copySync(projectPath, destPath, { dereference: false });
-        }
+      } else if (fs.existsSync(projectPath)) {
+        fsExtra.copySync(projectPath, destPath, { dereference: false });
       }
     }
   }
@@ -663,9 +661,9 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
     const latestCommit = getLatestCommit(repoDir);
 
     if (
-      (!extraContext || Object.keys(extraContext).length === 0) &&
-      !biscuitcutterInput &&
-      !refreshPrivateVariables
+      (!extraContext || Object.keys(extraContext).length === 0)
+      && !biscuitcutterInput
+      && !refreshPrivateVariables
     ) {
       if (isProjectUpdated(repoDir, templateState.commit, latestCommit, strict)) {
         return {

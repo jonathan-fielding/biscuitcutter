@@ -122,8 +122,8 @@ function applyPythonStringPolyfills(): void {
 
   defineMethod('lower', function (this: string) { return this.toLowerCase(); });
   defineMethod('upper', function (this: string) { return this.toUpperCase(); });
-  defineMethod('capitalize', function (this: string) { 
-    return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase(); 
+  defineMethod('capitalize', function (this: string) {
+    return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
   });
   defineMethod('title', function (this: string) {
     return this.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase());
@@ -160,7 +160,7 @@ function applyPythonStringPolyfills(): void {
     }
     return originalSplit.call(this, separator as any, limit);
   });
-  
+
   // We can't safely override String.prototype.split permanently globally because it breaks JS apps.
   // We handle replace & split inside the env.renderString proxy wrapper safely!
 
@@ -177,9 +177,7 @@ export function registerDefaultExtensions(env: nunjucks.Environment): void {
   env.addExtension('NowExtension', new NowExtension());
 
   // Jsonify filter
-  env.addFilter('jsonify', (obj: any, indent: number = 4) => {
-    return JSON.stringify(obj, Object.keys(obj).sort(), indent);
-  });
+  env.addFilter('jsonify', (obj: any, indent: number = 4) => JSON.stringify(obj, Object.keys(obj).sort(), indent));
 
   // Slugify filter
   env.addFilter('slugify', (value: string, options?: Record<string, any>) => {
@@ -207,9 +205,9 @@ export function registerDefaultExtensions(env: nunjucks.Environment): void {
 
       // Handle keyword arguments e.g. map(attribute='name')
       if (
-        filterNameOrAttr &&
-        typeof filterNameOrAttr === 'object' &&
-        filterNameOrAttr.__keywords
+        filterNameOrAttr
+        && typeof filterNameOrAttr === 'object'
+        && filterNameOrAttr.__keywords
       ) {
         const attr = filterNameOrAttr.attribute;
         if (attr) {
@@ -240,8 +238,7 @@ export function registerDefaultExtensions(env: nunjucks.Environment): void {
   env.addGlobal(
     'random_ascii_string',
     (length: number, punctuation: boolean = false) => {
-      const letters =
-        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
       const punct = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
       const corpus = punctuation ? letters + punct : letters;
       let result = '';
@@ -256,7 +253,7 @@ export function registerDefaultExtensions(env: nunjucks.Environment): void {
   // Handles both positional args and Nunjucks keyword args (passed as object with __keywords: true)
   env.addGlobal('now', (timezoneOrKwargs?: string | Record<string, any>, format?: string) => {
     let fmt = '%Y-%m-%d';
-    
+
     // Check if first arg is Nunjucks keyword arguments object
     if (timezoneOrKwargs && typeof timezoneOrKwargs === 'object' && timezoneOrKwargs.__keywords) {
       fmt = timezoneOrKwargs.format || fmt;
@@ -266,7 +263,7 @@ export function registerDefaultExtensions(env: nunjucks.Environment): void {
       // First positional arg looks like a format string
       fmt = timezoneOrKwargs;
     }
-    
+
     return strftime(fmt, new Date());
   });
 }

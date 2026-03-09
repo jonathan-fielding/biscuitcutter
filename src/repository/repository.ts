@@ -10,10 +10,10 @@ import { unzip } from './zipfile';
 
 const REPO_REGEX = new RegExp(
   // something like git:// ssh:// file:// etc.
-  '((((git|hg)\\+)?(git|ssh|file|https?):(//)?)' +
-    '|' +
+  '((((git|hg)\\+)?(git|ssh|file|https?):(//)?)'
+    + '|'
     // something like user@...
-    '(\\w+@[\\w.]+))',
+    + '(\\w+@[\\w.]+))',
 );
 
 /**
@@ -59,8 +59,8 @@ export function expandAbbreviations(
  */
 export function repositoryHasCookiecutterJson(repoDirectory: string): boolean {
   const dirExists = fs.existsSync(repoDirectory) && fs.statSync(repoDirectory).isDirectory();
-  const configExists = fs.existsSync(path.join(repoDirectory, 'biscuitcutter.json')) || 
-                       fs.existsSync(path.join(repoDirectory, 'cookiecutter.json'));
+  const configExists = fs.existsSync(path.join(repoDirectory, 'biscuitcutter.json'))
+                       || fs.existsSync(path.join(repoDirectory, 'cookiecutter.json'));
   return dirExists && configExists;
 }
 
@@ -113,9 +113,7 @@ export async function determineRepoDir(
   }
 
   if (directory) {
-    repositoryCandidates = repositoryCandidates.map((s) =>
-      path.join(s, directory),
-    );
+    repositoryCandidates = repositoryCandidates.map((s) => path.join(s, directory));
   }
 
   for (const repoCandidate of repositoryCandidates) {
@@ -125,7 +123,7 @@ export async function determineRepoDir(
   }
 
   throw new RepositoryNotFoundError(
-    `A valid repository for "${template}" could not be found in the following ` +
-      `locations:\n${repositoryCandidates.join('\n')}`,
+    `A valid repository for "${template}" could not be found in the following `
+      + `locations:\n${repositoryCandidates.join('\n')}`,
   );
 }

@@ -42,7 +42,7 @@ export function getLogger(name: string): Logger {
     debug(message: string, ...args: any[]) {
       const formatted = formatMessage('DEBUG', name, message, args);
       if (debugFileStream) {
-        debugFileStream.write(formatted + '\n');
+        debugFileStream.write(`${formatted}\n`);
       }
       if (shouldLog('DEBUG')) {
         console.log(formatted);
@@ -51,7 +51,7 @@ export function getLogger(name: string): Logger {
     info(message: string, ...args: any[]) {
       const formatted = formatMessage('INFO', name, message, args);
       if (debugFileStream) {
-        debugFileStream.write(formatted + '\n');
+        debugFileStream.write(`${formatted}\n`);
       }
       if (shouldLog('INFO')) {
         console.log(formatted);
@@ -60,7 +60,7 @@ export function getLogger(name: string): Logger {
     warn(message: string, ...args: any[]) {
       const formatted = formatMessage('WARNING', name, message, args);
       if (debugFileStream) {
-        debugFileStream.write(formatted + '\n');
+        debugFileStream.write(`${formatted}\n`);
       }
       if (shouldLog('WARNING')) {
         console.warn(formatted);
@@ -69,7 +69,7 @@ export function getLogger(name: string): Logger {
     error(message: string, ...args: any[]) {
       const formatted = formatMessage('ERROR', name, message, args);
       if (debugFileStream) {
-        debugFileStream.write(formatted + '\n');
+        debugFileStream.write(`${formatted}\n`);
       }
       if (shouldLog('ERROR')) {
         console.error(formatted);

@@ -1,15 +1,22 @@
 /**
  * Tests for BiscuitCutter prompt module.
  */
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import {
+  describe, it, expect, vi, afterEach,
+} from 'vitest';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
 import {
   renderVariable,
   promptForConfig,
   processYesNoResponse,
-  readUserVariable
+  readUserVariable,
 } from '../../src/core/prompt';
 import { createStrictEnvironment } from '../../src/template/environment';
 import { UndefinedVariableInTemplateError } from '../../src/utils/exceptions';
+
+// Need these imports at top level for promptAndDelete tests
 
 describe('processYesNoResponse', () => {
   it.each(['1', 'true', 't', 'yes', 'y', 'on'])(
@@ -40,12 +47,11 @@ describe('processYesNoResponse', () => {
 
 describe('readUserVariable', () => {
   it('should force a required answer if defaultValue is null', async () => {
-    // It's tricky to unit test readline directly without mocking the streams fully, 
+    // It's tricky to unit test readline directly without mocking the streams fully,
     // but structurally we want to ensure readUserVariable is exported properly at least.
     expect(typeof readUserVariable).toBe('function');
   });
 });
-
 
 describe('renderVariable', () => {
   it('should return null/undefined/boolean as-is', () => {
@@ -319,8 +325,3 @@ describe('promptAndDelete', () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 });
-
-// Need these imports at top level for promptAndDelete tests
-import * as fs from 'fs';
-import * as path from 'path';
-import * as os from 'os';
