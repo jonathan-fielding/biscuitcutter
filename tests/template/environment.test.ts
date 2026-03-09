@@ -73,4 +73,21 @@ describe('Environment', () => {
     );
     expect(result).toBe('map');
   });
+
+  it('should render null values as "None" and throw on undefined to mimic Jinja2 StrictUndefined', () => {
+    const env = createStrictEnvironment();
+    // Verify null stringifies to 'None'
+    const result = env.renderString('{% if val == null %}YES{% endif %} {{ val }}', { val: null });
+    expect(result).toBe('YES None');
+    // Verify that missing values still throw
+    expect(() => env.renderString('{{ missing_value }}', {})).toThrow();
+  });
+
+  it('should support Jinja2 raw tags with whitespace strip modifiers', () => {
+    const env = createStrictEnvironment();
+    // Nunjucks doesn't natively support {% raw -%} or {% endraw -%} modifier strips. 
+    // We expect it to be parsed correctly without crashing.
+    const result = env.renderString('{%- raw -%} {{ dont_evaluate_this }} {%- endraw -%}', {});
+    expect(result).toBe(' {{ dont_evaluate_this }} ');
+  });
 });

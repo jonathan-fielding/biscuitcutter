@@ -332,7 +332,7 @@ export function renderAndCreateDir(
   }
 
   const renderedDirname = environment.renderString(dirname, context);
-  const dirToCreate = path.join(outputDir, renderedDirname);
+  const dirToCreate = path.resolve(outputDir, renderedDirname);
 
   // Security: validate the rendered path stays within output directory
   validatePathWithinBoundary(dirToCreate, outputDir);
@@ -411,11 +411,14 @@ export function generateFiles(
   let projectDir: string;
   let outputDirectoryCreated: boolean;
 
+  // Resolve output directory before any potential working directory changes (`workIn`)
+  const resolvedOutputDir = path.resolve(outputDir);
+
   try {
     [projectDir, outputDirectoryCreated] = renderAndCreateDir(
       unrenderedDir,
       context,
-      outputDir,
+      resolvedOutputDir,
       env,
       overwriteIfExists,
     );
@@ -494,7 +497,7 @@ export function generateFiles(
           renderAndCreateDir(
             unrenderedSubdir,
             context!,
-            outputDir,
+            resolvedOutputDir,
             env,
             overwriteIfExists,
           );
@@ -503,7 +506,7 @@ export function generateFiles(
             if (deleteProjectOnFailure) {
               rmtree(projectDir);
             }
-            const relDir = path.relative(outputDir, unrenderedSubdir);
+            const relDir = path.relative(resolvedOutputDir, unrenderedSubdir);
             throw new UndefinedVariableInTemplateError(
               `Unable to create directory '${relDir}'`,
               err,
