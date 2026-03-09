@@ -32,6 +32,40 @@ export function registerDefaultExtensions(env: nunjucks.Environment): void {
     return slug;
   });
 
+  // Jinja2 Map Filter Polyfill
+  env.addFilter(
+    'map',
+    (arr: any[], filterNameOrAttr?: string | Record<string, any>, ...args: any[]) => {
+      if (!Array.isArray(arr) || !arr) return arr;
+
+      // Handle keyword arguments e.g. map(attribute='name')
+      if (
+        filterNameOrAttr &&
+        typeof filterNameOrAttr === 'object' &&
+        filterNameOrAttr.__keywords
+      ) {
+        const attr = filterNameOrAttr.attribute;
+        if (attr) {
+          return arr.map((item: any) => item?.[attr]);
+        }
+        return arr;
+      }
+
+      const prop = filterNameOrAttr as string;
+
+      try {
+        const filter = env.getFilter(prop);
+        if (filter) {
+          return arr.map((item) => filter(item, ...args));
+        }
+      } catch {
+        // filter not found, fallback to attribute
+      }
+
+      return arr.map((item: any) => item?.[prop]);
+    },
+  );
+
   // UUID4 global
   env.addGlobal('uuid4', () => randomUUID());
 
