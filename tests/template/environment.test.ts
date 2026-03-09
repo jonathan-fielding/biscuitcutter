@@ -55,4 +55,22 @@ describe('Environment', () => {
     });
     expect(env).toBeDefined();
   });
+
+  it('should process Python string manipulations (lower, replace)', () => {
+    const env = createStrictEnvironment();
+    const result = env.renderString(
+      '{{ "HELLO world".lower().replace(" ", "_") }}',
+      {}
+    );
+    expect(result).toBe('hello_world');
+  });
+
+  it('should process split, map("first"), join, and lower logic correctly', () => {
+    const env = createStrictEnvironment();
+    const result = env.renderString(
+      '{{ cookiecutter.project_name.split(" ") | map("first") | join("") | lower }}',
+      { cookiecutter: { project_name: "My Awesome Project" } }
+    );
+    expect(result).toBe('map');
+  });
 });
