@@ -18,6 +18,8 @@
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
+    "lint": "eslint src tests --ext .ts",
+    "lint:fix": "eslint src tests --ext .ts --fix",
     "prepublishOnly": "npm run build && npm test",
     "changeset": "npx @changesets/cli"
   },
@@ -59,6 +61,11 @@
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^25.3.5",
     "@types/nunjucks": "^3.2.6",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-typescript": "^18.0.0",
+    "eslint-plugin-import": "^2.32.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"
   }
