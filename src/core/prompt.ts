@@ -30,13 +30,30 @@ export async function readUserVariable(
     output: process.stdout,
   });
 
-  return new Promise<any>((resolve) => {
-    const defaultSuffix = defaultValue !== undefined ? ` [${defaultValue}]` : '';
-    rl.question(`${prefix}${question}${defaultSuffix}: `, (answer) => {
-      rl.close();
-      resolve(answer || defaultValue);
+  const ask = (): Promise<any> => {
+    return new Promise<any>((resolve) => {
+      // If default value is null, it's a required field (no default suffix).
+      const isRequired = defaultValue === null;
+      const defaultSuffix = isRequired ? '' : (defaultValue !== undefined ? ` [${defaultValue}]` : '');
+      
+      rl.question(`${prefix}${question}${defaultSuffix}: `, (answer) => {
+        if (!answer) {
+          if (isRequired) {
+            console.log(`\nError: '${varName}' is required and cannot be empty.`);
+            resolve(ask());
+            return;
+          }
+          resolve(defaultValue);
+        } else {
+          resolve(answer);
+        }
+      });
     });
-  });
+  };
+
+  const result = await ask();
+  rl.close();
+  return result;
 }
 
 const YES_VALUES = new Set(['1', 'true', 't', 'yes', 'y', 'on']);

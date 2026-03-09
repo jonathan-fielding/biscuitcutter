@@ -8,6 +8,18 @@ import { registerDefaultExtensions } from './extensions';
 
 const logger = getLogger('biscuitcutter.environment');
 
+// In Nunjucks throwOnUndefined throws on both undefined AND null.
+// Jinja2 StrictUndefined strictly throws on undefined variables but allows rendering "None" for nulls.
+if ((nunjucks as any).runtime && (nunjucks as any).runtime.ensureDefined) {
+  const originalEnsureDefined = (nunjucks as any).runtime.ensureDefined;
+  (nunjucks as any).runtime.ensureDefined = function (val: any, lineno: number, colno: number) {
+    if (val === null) {
+      return 'None';
+    }
+    return originalEnsureDefined(val, lineno, colno);
+  };
+}
+
 export interface EnvironmentOptions {
   context?: Record<string, any>;
   keepTrailingNewline?: boolean;
@@ -63,6 +75,10 @@ export function createStrictEnvironment(options: EnvironmentOptions = {}): nunju
   // Wrap renderString to safely polyfill Python's global `.replace()` and zero-arg `.split()`
   const originalRenderString = env.renderString.bind(env);
   env.renderString = function (str: string, context?: any) {
+    // Nunjucks doesn't natively support modifier dashes on `raw` blocks (e.g. `{%- raw -%}` or `{% endraw -%}`)
+    // This strips out any surrounding modifier combinations so it acts as standard block tags to prevent crash.
+    str = str.replace(/{%-?\s*raw\s*-?%}/g, '{% raw %}').replace(/{%-?\s*endraw\s*-?%}/g, '{% endraw %}');
+
     const originalReplace = String.prototype.replace;
     const originalSplit = String.prototype.split;
     try {
