@@ -11,47 +11,6 @@ import { promptAndDelete } from '../core/prompt';
 import { makeSurePathExists } from '../utils/utils';
 
 /**
- * Download and unpack a zipfile at a given URI.
- *
- * This will download the zipfile to the biscuitcutter repository,
- * and unpack into a temporary directory.
- */
-export async function unzip(
-  zipUri: string,
-  isUrl: boolean,
-  cloneToDir: string = '.',
-  noInput: boolean = false,
-  password?: string | null,
-): Promise<string> {
-  // Ensure that cloneToDir exists
-  const expandedCloneDir = path.resolve(cloneToDir);
-  makeSurePathExists(expandedCloneDir);
-
-  let zipPath: string;
-
-  if (isUrl) {
-    // Build the name of the cached zipfile
-    const identifier = zipUri.split('/').pop()!;
-    zipPath = path.join(expandedCloneDir, identifier);
-
-    if (fs.existsSync(zipPath)) {
-      const download = await promptAndDelete(zipPath, noInput);
-      if (!download) {
-        // Reuse existing
-        return unzipLocal(zipPath, password);
-      }
-    }
-
-    // Download the zipfile
-    await downloadFile(zipUri, zipPath);
-  } else {
-    zipPath = path.resolve(zipUri);
-  }
-
-  return unzipLocal(zipPath, password);
-}
-
-/**
  * Download a file from a URL.
  */
 async function downloadFile(url: string, destPath: string): Promise<void> {
@@ -143,4 +102,45 @@ function unzipLocal(zipPath: string, password?: string | null): string {
       `Failed to process zip file ${zipPath}: ${err}`,
     );
   }
+}
+
+/**
+ * Download and unpack a zipfile at a given URI.
+ *
+ * This will download the zipfile to the biscuitcutter repository,
+ * and unpack into a temporary directory.
+ */
+export async function unzip(
+  zipUri: string,
+  isUrl: boolean,
+  cloneToDir: string = '.',
+  noInput: boolean = false,
+  password?: string | null,
+): Promise<string> {
+  // Ensure that cloneToDir exists
+  const expandedCloneDir = path.resolve(cloneToDir);
+  makeSurePathExists(expandedCloneDir);
+
+  let zipPath: string;
+
+  if (isUrl) {
+    // Build the name of the cached zipfile
+    const identifier = zipUri.split('/').pop()!;
+    zipPath = path.join(expandedCloneDir, identifier);
+
+    if (fs.existsSync(zipPath)) {
+      const download = await promptAndDelete(zipPath, noInput);
+      if (!download) {
+        // Reuse existing
+        return unzipLocal(zipPath, password);
+      }
+    }
+
+    // Download the zipfile
+    await downloadFile(zipUri, zipPath);
+  } else {
+    zipPath = path.resolve(zipUri);
+  }
+
+  return unzipLocal(zipPath, password);
 }

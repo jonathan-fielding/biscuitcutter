@@ -1,7 +1,9 @@
 /**
  * Tests for BiscuitCutter utils module.
  */
-import { describe, it, expect, afterEach } from 'vitest';
+import {
+  describe, it, expect, afterEach,
+} from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
@@ -83,11 +85,9 @@ describe('workIn', () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'biscuitcutter-test-'));
 
     try {
-      expect(() =>
-        workIn(tmpDir, () => {
-          throw new Error('test error');
-        }),
-      ).toThrow('test error');
+      expect(() => workIn(tmpDir, () => {
+        throw new Error('test error');
+      })).toThrow('test error');
       expect(process.cwd()).toBe(originalCwd);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
@@ -103,7 +103,7 @@ describe('makeExecutable', () => {
 
     try {
       makeExecutable(scriptPath);
-      const mode = fs.statSync(scriptPath).mode;
+      const { mode } = fs.statSync(scriptPath);
       expect(mode & 0o100).toBeTruthy(); // owner execute bit
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });

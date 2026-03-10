@@ -165,7 +165,7 @@ export function readTemplateState(projectDir: string): TemplateState {
  */
 export function writeTemplateState(projectDir: string, state: TemplateState): void {
   const stateFile = path.join(projectDir, STATE_FILE);
-  const content = JSON.stringify(state, null, 2) + '\n';
+  const content = `${JSON.stringify(state, null, 2)}\n`;
   fs.writeFileSync(stateFile, content, 'utf-8');
 }
 
@@ -249,10 +249,10 @@ function validateCookiecutterTemplate(templateDir: string): void {
   const hasTemplate = entries.some((entry) => {
     const fullPath = path.join(templateDir, entry);
     return (
-      fs.statSync(fullPath).isDirectory() &&
-      entry.includes('cookiecutter') &&
-      entry.includes('{{') &&
-      entry.includes('}}')
+      fs.statSync(fullPath).isDirectory()
+      && entry.includes('cookiecutter')
+      && entry.includes('{{')
+      && entry.includes('}}')
     );
   });
 
@@ -287,26 +287,30 @@ function getDeletedFiles(templateDir: string, projectDir: string): Set<string> {
   return deletedPaths;
 }
 
+function removeMatchingPaths(
+  dir: string,
+  pattern: RegExp,
+  relativePath: string = '',
+): void {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const entryRelative = relativePath ? path.join(relativePath, entry.name) : entry.name;
+    const fullPath = path.join(dir, entry.name);
+    if (pattern.test(entryRelative)) {
+      fs.rmSync(fullPath, { recursive: true, force: true });
+    } else if (entry.isDirectory()) {
+      removeMatchingPaths(fullPath, pattern, entryRelative);
+    }
+  }
+}
+
 function removePaths(rootDir: string, pathsToRemove: Set<string>): void {
   for (const pathToRemove of pathsToRemove) {
     if (pathToRemove.includes('*')) {
       const pattern = new RegExp(
-        '^' + pathToRemove.replace(/\*/g, '.*').replace(/\?/g, '.') + '$',
+        `^${pathToRemove.replace(/\*/g, '.*').replace(/\?/g, '.')}$`,
       );
-
-      function removeMatching(dir: string, relativePath: string = ''): void {
-        const entries = fs.readdirSync(dir, { withFileTypes: true });
-        for (const entry of entries) {
-          const entryRelative = relativePath ? path.join(relativePath, entry.name) : entry.name;
-          const fullPath = path.join(dir, entry.name);
-          if (pattern.test(entryRelative)) {
-            fs.rmSync(fullPath, { recursive: true, force: true });
-          } else if (entry.isDirectory()) {
-            removeMatching(fullPath, entryRelative);
-          }
-        }
-      }
-      removeMatching(rootDir);
+      removeMatchingPaths(rootDir, pattern);
     } else {
       const fullPath = path.join(rootDir, pathToRemove);
       if (fs.existsSync(fullPath)) {
@@ -411,10 +415,8 @@ function copyMatchingFiles(templateDir: string, projectDir: string, destDir: str
           }
           walkAndCopy(templatePath, projectPath, destPath);
         }
-      } else {
-        if (fs.existsSync(projectPath)) {
-          fsExtra.copySync(projectPath, destPath, { dereference: false });
-        }
+      } else if (fs.existsSync(projectPath)) {
+        fsExtra.copySync(projectPath, destPath, { dereference: false });
       }
     }
   }
@@ -422,12 +424,13 @@ function copyMatchingFiles(templateDir: string, projectDir: string, destDir: str
 }
 
 async function promptForApply(
-  diff: string,
+  patchDiff: string,
   oldDir: string,
   newDir: string,
 ): Promise<'y' | 'n' | 's'> {
   const inquirer = await import('inquirer');
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     const { action } = await inquirer.default.prompt([
       {
@@ -445,7 +448,7 @@ async function promptForApply(
     ]);
 
     if (action === 'v') {
-      if (diff.trim()) {
+      if (patchDiff.trim()) {
         displayDiff(oldDir, newDir);
       } else {
         console.log('There are no changes.');
@@ -663,9 +666,9 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
     const latestCommit = getLatestCommit(repoDir);
 
     if (
-      (!extraContext || Object.keys(extraContext).length === 0) &&
-      !biscuitcutterInput &&
-      !refreshPrivateVariables
+      (!extraContext || Object.keys(extraContext).length === 0)
+      && !biscuitcutterInput
+      && !refreshPrivateVariables
     ) {
       if (isProjectUpdated(repoDir, templateState.commit, latestCommit, strict)) {
         return {
@@ -708,23 +711,23 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
       updateDeletedPaths: false,
     });
 
-    const diff = getDiff(currentTemplateDir, newTemplateDir);
+    const patchDiff = getDiff(currentTemplateDir, newTemplateDir);
 
     let shouldApply = !skipUpdate;
 
     if (!skipApplyAsk && !skipUpdate) {
-      const response = await promptForApply(diff, currentTemplateDir, newTemplateDir);
+      const response = await promptForApply(patchDiff, currentTemplateDir, newTemplateDir);
 
       if (response === 'n') {
-        return { success: false, message: 'User cancelled template update.', diff };
+        return { success: false, message: 'User cancelled template update.', diff: patchDiff };
       }
       if (response === 's') {
         shouldApply = false;
       }
     }
 
-    if (shouldApply && diff.trim()) {
-      const applyResult = applyPatch(diff, projectDir, allowUntrackedFiles);
+    if (shouldApply && patchDiff.trim()) {
+      const applyResult = applyPatch(patchDiff, projectDir, allowUntrackedFiles);
       if (applyResult.message) {
         console.warn(applyResult.message);
       }
@@ -747,7 +750,7 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
     return {
       success: true,
       message: 'Project has been updated from the template!',
-      diff,
+      diff: patchDiff,
     };
   } finally {
     fs.rmSync(tempDir, { recursive: true, force: true });

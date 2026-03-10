@@ -39,14 +39,12 @@ export const DEFAULT_CONFIG: BiscuitCutterConfig = {
  */
 function expandPath(p: string): string {
   // Expand environment variables like $HOME or ${HOME}
-  p = p.replace(/\$\{?(\w+)\}?/g, (_match, varName) => {
-    return process.env[varName] || '';
-  });
+  let expanded = p.replace(/\$\{?(\w+)\}?/g, (_match, varName) => process.env[varName] || '');
   // Expand ~ to home directory
-  if (p.startsWith('~/') || p === '~') {
-    p = path.join(os.homedir(), p.slice(1));
+  if (expanded.startsWith('~/') || expanded === '~') {
+    expanded = path.join(os.homedir(), expanded.slice(1));
   }
-  return p;
+  return expanded;
 }
 
 /**
@@ -144,7 +142,7 @@ export function getUserConfig(
   }
 
   // Check for environment variable
-  const envConfigFile = process.env['BISCUITCUTTER_CONFIG'];
+  const envConfigFile = process.env.BISCUITCUTTER_CONFIG;
   if (envConfigFile) {
     logger.debug('User config not found or not specified. Loading default config.');
     return getConfig(envConfigFile);

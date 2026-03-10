@@ -1,11 +1,13 @@
 /**
  * Tests for BiscuitCutter generateFiles functionality.
  */
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import {
+  describe, it, expect, beforeEach, afterEach,
+} from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { generateFiles, generateContext, renderAndCreateDir } from '../../src/core/generate';
+import { generateFiles, renderAndCreateDir } from '../../src/core/generate';
 import {
   NonTemplatedInputDirError,
   OutputDirExistsError,
@@ -30,13 +32,11 @@ describe('generateFiles', () => {
   });
 
   it('should throw NonTemplatedInputDirError for nontemplated repo', () => {
-    expect(() =>
-      generateFiles(
-        path.join(FIXTURES_DIR, 'test-generate-files-nontemplated'),
-        { biscuitcutter: { food: 'pizza' } },
-        tmpDir,
-      ),
-    ).toThrow(NonTemplatedInputDirError);
+    expect(() => generateFiles(
+      path.join(FIXTURES_DIR, 'test-generate-files-nontemplated'),
+      { biscuitcutter: { food: 'pizza' } },
+      tmpDir,
+    )).toThrow(NonTemplatedInputDirError);
   });
 
   it('should generate files with unicode context', () => {
@@ -132,8 +132,8 @@ describe('generateFiles', () => {
       path.join(FIXTURES_DIR, 'test-generate-files'),
       { biscuitcutter: { food: 'pizzä' } },
       tmpDir,
-      true,  // overwriteIfExists
-      true,  // skipIfFileExists
+      true, // overwriteIfExists
+      true, // skipIfFileExists
     );
 
     const content = fs.readFileSync(simpleFile, 'utf-8');
@@ -146,15 +146,13 @@ describe('generateFiles', () => {
     const simpleFile = path.join(projectDir, 'simple.txt');
     fs.writeFileSync(simpleFile, 'temp');
 
-    expect(() =>
-      generateFiles(
-        path.join(FIXTURES_DIR, 'test-generate-files'),
-        { biscuitcutter: { food: 'pizzä' } },
-        tmpDir,
-        false, // overwriteIfExists
-        true,  // skipIfFileExists
-      ),
-    ).toThrow(OutputDirExistsError);
+    expect(() => generateFiles(
+      path.join(FIXTURES_DIR, 'test-generate-files'),
+      { biscuitcutter: { food: 'pizzä' } },
+      tmpDir,
+      false, // overwriteIfExists
+      true, // skipIfFileExists
+    )).toThrow(OutputDirExistsError);
 
     // Original file should still be intact
     expect(fs.readFileSync(simpleFile, 'utf-8')).toBe('temp');
@@ -193,9 +191,7 @@ describe('renderAndCreateDir', () => {
 
   it('should throw EmptyDirNameError for empty directory name', () => {
     const env = createStrictEnvironment();
-    expect(() =>
-      renderAndCreateDir('', { biscuitcutter: {} }, tmpDir, env),
-    ).toThrow(EmptyDirNameError);
+    expect(() => renderAndCreateDir('', { biscuitcutter: {} }, tmpDir, env)).toThrow(EmptyDirNameError);
   });
 
   it('should create a new directory', () => {
@@ -213,9 +209,7 @@ describe('renderAndCreateDir', () => {
   it('should throw when directory exists without overwrite', () => {
     const env = createStrictEnvironment();
     fs.mkdirSync(path.join(tmpDir, 'existing'));
-    expect(() =>
-      renderAndCreateDir('existing', { biscuitcutter: {} }, tmpDir, env),
-    ).toThrow(OutputDirExistsError);
+    expect(() => renderAndCreateDir('existing', { biscuitcutter: {} }, tmpDir, env)).toThrow(OutputDirExistsError);
   });
 
   it('should not throw when directory exists with overwrite', () => {
@@ -266,13 +260,11 @@ describe('UndefinedVariable Errors in generateFiles', () => {
   };
 
   it('should raise error for undefined variable in file name', () => {
-    expect(() =>
-      generateFiles(
-        path.join(FIXTURES_DIR, 'undefined-variable', 'file-name'),
-        undefinedContext,
-        tmpDir,
-      ),
-    ).toThrow(UndefinedVariableInTemplateError);
+    expect(() => generateFiles(
+      path.join(FIXTURES_DIR, 'undefined-variable', 'file-name'),
+      undefinedContext,
+      tmpDir,
+    )).toThrow(UndefinedVariableInTemplateError);
 
     expect(
       fs.existsSync(path.join(tmpDir, 'testproject')),
@@ -280,23 +272,19 @@ describe('UndefinedVariable Errors in generateFiles', () => {
   });
 
   it('should raise error for undefined variable in file content', () => {
-    expect(() =>
-      generateFiles(
-        path.join(FIXTURES_DIR, 'undefined-variable', 'file-content'),
-        undefinedContext,
-        tmpDir,
-      ),
-    ).toThrow(UndefinedVariableInTemplateError);
+    expect(() => generateFiles(
+      path.join(FIXTURES_DIR, 'undefined-variable', 'file-content'),
+      undefinedContext,
+      tmpDir,
+    )).toThrow(UndefinedVariableInTemplateError);
   });
 
   it('should raise error for undefined variable in dir name', () => {
-    expect(() =>
-      generateFiles(
-        path.join(FIXTURES_DIR, 'undefined-variable', 'dir-name'),
-        undefinedContext,
-        tmpDir,
-      ),
-    ).toThrow(UndefinedVariableInTemplateError);
+    expect(() => generateFiles(
+      path.join(FIXTURES_DIR, 'undefined-variable', 'dir-name'),
+      undefinedContext,
+      tmpDir,
+    )).toThrow(UndefinedVariableInTemplateError);
   });
 
   it('should keep project dir on failure when flag is set', () => {
@@ -307,8 +295,8 @@ describe('UndefinedVariable Errors in generateFiles', () => {
         tmpDir,
         false, // overwriteIfExists
         false, // skipIfFileExists
-        true,  // acceptHooks
-        true,  // keepProjectOnFailure
+        true, // acceptHooks
+        true, // keepProjectOnFailure
       );
     } catch {
       // Expected to throw
@@ -319,12 +307,10 @@ describe('UndefinedVariable Errors in generateFiles', () => {
   });
 
   it('should raise error for undefined project directory', () => {
-    expect(() =>
-      generateFiles(
-        path.join(FIXTURES_DIR, 'undefined-variable', 'dir-name'),
-        {},
-        tmpDir,
-      ),
-    ).toThrow(UndefinedVariableInTemplateError);
+    expect(() => generateFiles(
+      path.join(FIXTURES_DIR, 'undefined-variable', 'dir-name'),
+      {},
+      tmpDir,
+    )).toThrow(UndefinedVariableInTemplateError);
   });
 });

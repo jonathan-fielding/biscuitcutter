@@ -1,7 +1,9 @@
 /**
  * Tests for BiscuitCutter log module.
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import {
+  describe, it, expect, vi, beforeEach, afterEach,
+} from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
@@ -86,8 +88,10 @@ describe('Logger', () => {
       logger.debug('File debug message');
 
       // Give time for the stream to flush
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+      await new Promise((resolve) => {
+        setTimeout(resolve, 100);
+      });
+
       const content = fs.readFileSync(debugFile, 'utf-8');
       expect(content).toContain('File debug message');
     } finally {
