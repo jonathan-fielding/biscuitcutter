@@ -7,7 +7,7 @@ import {
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { generateFiles, generateContext, renderAndCreateDir } from '../../src/core/generate';
+import { generateFiles, renderAndCreateDir } from '../../src/core/generate';
 import {
   NonTemplatedInputDirError,
   OutputDirExistsError,

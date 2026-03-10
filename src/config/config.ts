@@ -39,12 +39,12 @@ export const DEFAULT_CONFIG: BiscuitCutterConfig = {
  */
 function expandPath(p: string): string {
   // Expand environment variables like $HOME or ${HOME}
-  p = p.replace(/\$\{?(\w+)\}?/g, (_match, varName) => process.env[varName] || '');
+  let expanded = p.replace(/\$\{?(\w+)\}?/g, (_match, varName) => process.env[varName] || '');
   // Expand ~ to home directory
-  if (p.startsWith('~/') || p === '~') {
-    p = path.join(os.homedir(), p.slice(1));
+  if (expanded.startsWith('~/') || expanded === '~') {
+    expanded = path.join(os.homedir(), expanded.slice(1));
   }
-  return p;
+  return expanded;
 }
 
 /**

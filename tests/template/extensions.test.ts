@@ -2,7 +2,7 @@
  * Tests for BiscuitCutter extensions (default filters and globals).
  */
 import {
-  describe, it, expect, vi, afterEach,
+  describe, it, expect,
 } from 'vitest';
 import { createStrictEnvironment } from '../../src/template/environment';
 

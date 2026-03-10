@@ -20,7 +20,7 @@ describe('Cookiecutter Backward Compatibility', () => {
   });
 
   it('should successfully generate a template mapped from cookiecutter.json and using cookiecutter jinja tags', async () => {
-    const resultDir = await biscuitcutter({
+    await biscuitcutter({
       template: fixtureDir,
       outputDir,
       noInput: true,

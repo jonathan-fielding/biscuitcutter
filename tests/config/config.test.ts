@@ -2,17 +2,15 @@
  * Tests for BiscuitCutter config module.
  */
 import {
-  describe, it, expect, beforeEach, afterEach, vi,
+  describe, it, expect,
 } from 'vitest';
 import * as path from 'path';
-import * as fs from 'fs';
 import * as os from 'os';
 import {
   mergeConfigs,
   getConfig,
   getUserConfig,
   DEFAULT_CONFIG,
-  USER_CONFIG_PATH,
 } from '../../src/config/config';
 import {
   ConfigDoesNotExistError,

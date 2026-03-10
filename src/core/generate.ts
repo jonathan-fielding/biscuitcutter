@@ -56,6 +56,19 @@ function isUndefinedVariableError(err: any): boolean {
 }
 
 /**
+ * Simple glob/fnmatch implementation.
+ */
+function minimatch(filepath: string, pattern: string): boolean {
+  // Convert fnmatch pattern to regex
+  let regexStr = pattern
+    .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+    .replace(/\*/g, '.*')
+    .replace(/\?/g, '.');
+  regexStr = `^${regexStr}$`;
+  return new RegExp(regexStr).test(filepath);
+}
+
+/**
  * Check whether the given `filePath` should only be copied and not rendered.
  */
 export function isCopyOnlyPath(
@@ -73,19 +86,6 @@ export function isCopyOnlyPath(
     return false;
   }
   return false;
-}
-
-/**
- * Simple glob/fnmatch implementation.
- */
-function minimatch(filepath: string, pattern: string): boolean {
-  // Convert fnmatch pattern to regex
-  let regexStr = pattern
-    .replace(/[.+^${}()|[\]\\]/g, '\\$&')
-    .replace(/\*/g, '.*')
-    .replace(/\?/g, '.');
-  regexStr = `^${regexStr}$`;
-  return new RegExp(regexStr).test(filepath);
 }
 
 /**
@@ -399,9 +399,9 @@ export function generateFiles(
   acceptHooks: boolean = true,
   keepProjectOnFailure: boolean = false,
 ): string {
-  context = context || {};
+  const effectiveContext = context || {};
 
-  const env = createEnvWithContext(context);
+  const env = createEnvWithContext(effectiveContext);
   const templateDir = findTemplate(repoDir);
   logger.debug('Generating project from %s...', templateDir);
 
@@ -416,7 +416,7 @@ export function generateFiles(
   try {
     [projectDir, outputDirectoryCreated] = renderAndCreateDir(
       unrenderedDir,
-      context,
+      effectiveContext,
       resolvedOutputDir,
       env,
       overwriteIfExists,
@@ -426,7 +426,7 @@ export function generateFiles(
       throw new UndefinedVariableInTemplateError(
         `Unable to create project directory '${unrenderedDir}'`,
         err,
-        context,
+        effectiveContext,
       );
     }
     throw err;
@@ -442,7 +442,7 @@ export function generateFiles(
       repoDir,
       'pre_gen_project',
       projectDir,
-      context,
+      effectiveContext,
       deleteProjectOnFailure,
     );
   }
@@ -450,7 +450,7 @@ export function generateFiles(
   workIn(templateDir, () => {
     // Set up nunjucks to load templates from current dir and ../templates
     const renderEnv = createStrictEnvironment({
-      context,
+      context: effectiveContext,
       searchPaths: ['.', '../templates'],
     });
 
@@ -461,7 +461,7 @@ export function generateFiles(
 
       for (const d of [...dirs].sort()) {
         const normalizedPath = path.normalize(path.join(root, d));
-        if (isCopyOnlyPath(normalizedPath, context!)) {
+        if (isCopyOnlyPath(normalizedPath, effectiveContext)) {
           logger.debug('Found copy only path %s', d);
           copyDirs.push(d);
         } else {
@@ -472,7 +472,7 @@ export function generateFiles(
       for (const copyDir of copyDirs) {
         const indir = path.normalize(path.join(root, copyDir));
         let outdir = path.normalize(path.join(projectDir, indir));
-        outdir = env.renderString(outdir, context!);
+        outdir = env.renderString(outdir, effectiveContext);
         logger.debug(
           'Copying dir %s to %s without rendering',
           indir,
@@ -494,7 +494,7 @@ export function generateFiles(
         try {
           renderAndCreateDir(
             unrenderedSubdir,
-            context!,
+            effectiveContext,
             resolvedOutputDir,
             env,
             overwriteIfExists,
@@ -508,7 +508,7 @@ export function generateFiles(
             throw new UndefinedVariableInTemplateError(
               `Unable to create directory '${relDir}'`,
               err,
-              context!,
+              effectiveContext,
             );
           }
           throw err;
@@ -517,8 +517,8 @@ export function generateFiles(
 
       for (const f of [...files].sort()) {
         const infile = path.normalize(path.join(root, f));
-        if (isCopyOnlyPath(infile, context!)) {
-          const outfileRendered = env.renderString(infile, context!);
+        if (isCopyOnlyPath(infile, effectiveContext)) {
+          const outfileRendered = env.renderString(infile, effectiveContext);
           const outfile = path.join(projectDir, outfileRendered);
           logger.debug(
             'Copying file %s to %s without rendering',
@@ -530,7 +530,7 @@ export function generateFiles(
           continue;
         }
         try {
-          generateFile(projectDir, infile, context!, renderEnv, skipIfFileExists);
+          generateFile(projectDir, infile, effectiveContext, renderEnv, skipIfFileExists);
         } catch (err: any) {
           if (isUndefinedVariableError(err)) {
             if (deleteProjectOnFailure) {
@@ -539,7 +539,7 @@ export function generateFiles(
             throw new UndefinedVariableInTemplateError(
               `Unable to create file '${infile}'`,
               err,
-              context!,
+              effectiveContext,
             );
           }
           throw err;
@@ -553,7 +553,7 @@ export function generateFiles(
       repoDir,
       'post_gen_project',
       projectDir,
-      context,
+      effectiveContext,
       deleteProjectOnFailure,
     );
   }
