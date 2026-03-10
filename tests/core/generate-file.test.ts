@@ -10,8 +10,6 @@ import * as os from 'os';
 import { createStrictEnvironment } from '../../src/template/environment';
 import { generateFile, isCopyOnlyPath } from '../../src/core/generate';
 
-const FILES_DIR = path.join(__dirname, '../_fixtures/files');
-
 describe('isCopyOnlyPath', () => {
   it('should return true for matching copy_without_render patterns', () => {
     const context = {

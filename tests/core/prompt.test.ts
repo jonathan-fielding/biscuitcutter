@@ -2,7 +2,7 @@
  * Tests for BiscuitCutter prompt module.
  */
 import {
-  describe, it, expect, vi, afterEach,
+  describe, it, expect,
 } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';

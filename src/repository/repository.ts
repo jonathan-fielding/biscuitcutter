@@ -83,24 +83,24 @@ export async function determineRepoDir(
   password?: string | null,
   directory?: string | null,
 ): Promise<[string, boolean]> {
-  template = expandAbbreviations(template, abbreviations);
+  const expandedTemplate = expandAbbreviations(template, abbreviations);
 
   let repositoryCandidates: string[];
   let cleanup: boolean;
 
-  if (isZipFile(template)) {
+  if (isZipFile(expandedTemplate)) {
     const unzippedDir = await unzip(
-      template,
-      isRepoUrl(template),
+      expandedTemplate,
+      isRepoUrl(expandedTemplate),
       cloneToDir,
       noInput,
       password,
     );
     repositoryCandidates = [unzippedDir];
     cleanup = true;
-  } else if (isRepoUrl(template)) {
+  } else if (isRepoUrl(expandedTemplate)) {
     const clonedRepo = await clone(
-      template,
+      expandedTemplate,
       checkout,
       cloneToDir,
       noInput,
@@ -108,7 +108,7 @@ export async function determineRepoDir(
     repositoryCandidates = [clonedRepo];
     cleanup = false;
   } else {
-    repositoryCandidates = [template, path.join(cloneToDir, template)];
+    repositoryCandidates = [expandedTemplate, path.join(cloneToDir, expandedTemplate)];
     cleanup = false;
   }
 
@@ -123,7 +123,7 @@ export async function determineRepoDir(
   }
 
   throw new RepositoryNotFoundError(
-    `A valid repository for "${template}" could not be found in the following `
+    `A valid repository for "${expandedTemplate}" could not be found in the following `
       + `locations:\n${repositoryCandidates.join('\n')}`,
   );
 }
