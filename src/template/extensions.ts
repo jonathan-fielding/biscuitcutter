@@ -7,6 +7,105 @@ import { randomUUID } from 'crypto';
 
 let polyfillsApplied = false;
 
+/**
+ * Simple strftime implementation for common format codes.
+ */
+function strftime(format: string, date: Date): string {
+  const pad = (n: number, width: number = 2): string =>
+    String(n).padStart(width, '0');
+
+  return format.replace(/%[YmdHIMSpBbAa%]/g, (match) => {
+    switch (match) {
+      case '%Y':
+        return String(date.getFullYear());
+      case '%m':
+        return pad(date.getMonth() + 1);
+      case '%d':
+        return pad(date.getDate());
+      case '%H':
+        return pad(date.getHours());
+      case '%I': {
+        const h = date.getHours() % 12;
+        return pad(h === 0 ? 12 : h);
+      }
+      case '%M':
+        return pad(date.getMinutes());
+      case '%S':
+        return pad(date.getSeconds());
+      case '%p':
+        return date.getHours() >= 12 ? 'PM' : 'AM';
+      case '%B': {
+        const months = [
+          'January', 'February', 'March', 'April', 'May', 'June',
+          'July', 'August', 'September', 'October', 'November', 'December',
+        ];
+        return months[date.getMonth()];
+      }
+      case '%b': {
+        const monthsShort = [
+          'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+        ];
+        return monthsShort[date.getMonth()];
+      }
+      case '%A': {
+        const days = [
+          'Sunday', 'Monday', 'Tuesday', 'Wednesday',
+          'Thursday', 'Friday', 'Saturday',
+        ];
+        return days[date.getDay()];
+      }
+      case '%a': {
+        const daysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        return daysShort[date.getDay()];
+      }
+      case '%%':
+        return '%';
+      default:
+        return match;
+    }
+  });
+}
+
+/**
+ * Nunjucks Extension for {% now %} tag (Jinja2 compatible).
+ * Usage: {% now 'utc', '%Y-%m-%d' %} or {% now 'local', '%Y' %}
+ */
+export class NowExtension implements nunjucks.Extension {
+  tags = ['now'];
+
+  parse(parser: any, nodes: any, _lexer: any): any {
+    const tok = parser.nextToken();
+    const args = parser.parseSignature(null, true);
+    parser.advanceAfterBlockEnd(tok.value);
+
+    return new nodes.CallExtension(this, 'run', args, null);
+  }
+
+  run(_context: any, ...args: any[]): string {
+    // Filter out the callback function that Nunjucks adds
+    const filteredArgs = args.filter(arg => typeof arg !== 'function');
+    
+    // Default format
+    let format = '%Y-%m-%d';
+    
+    // Parse arguments: {% now 'utc', '%Y' %} or {% now '%Y' %}
+    if (filteredArgs.length >= 2) {
+      // timezone (ignored), format
+      format = filteredArgs[1];
+    } else if (filteredArgs.length === 1) {
+      // Could be timezone or format
+      const arg = filteredArgs[0];
+      if (arg && arg.startsWith('%')) {
+        format = arg;
+      }
+      // If it's just 'utc' or 'local', use default format
+    }
+    
+    return strftime(format, new Date());
+  }
+}
+
 function applyPythonStringPolyfills(): void {
   if (polyfillsApplied) return;
 
@@ -73,6 +172,9 @@ function applyPythonStringPolyfills(): void {
  */
 export function registerDefaultExtensions(env: nunjucks.Environment): void {
   applyPythonStringPolyfills();
+
+  // Register {% now %} tag extension
+  env.addExtension('NowExtension', new NowExtension());
 
   // Jsonify filter
   env.addFilter('jsonify', (obj: any, indent: number = 4) => {
@@ -166,65 +268,5 @@ export function registerDefaultExtensions(env: nunjucks.Environment): void {
     }
     
     return strftime(fmt, new Date());
-  });
-}
-
-/**
- * Simple strftime implementation for common format codes.
- */
-function strftime(format: string, date: Date): string {
-  const pad = (n: number, width: number = 2): string =>
-    String(n).padStart(width, '0');
-
-  return format.replace(/%[YmdHIMSpBbAa%]/g, (match) => {
-    switch (match) {
-      case '%Y':
-        return String(date.getFullYear());
-      case '%m':
-        return pad(date.getMonth() + 1);
-      case '%d':
-        return pad(date.getDate());
-      case '%H':
-        return pad(date.getHours());
-      case '%I': {
-        const h = date.getHours() % 12;
-        return pad(h === 0 ? 12 : h);
-      }
-      case '%M':
-        return pad(date.getMinutes());
-      case '%S':
-        return pad(date.getSeconds());
-      case '%p':
-        return date.getHours() >= 12 ? 'PM' : 'AM';
-      case '%B': {
-        const months = [
-          'January', 'February', 'March', 'April', 'May', 'June',
-          'July', 'August', 'September', 'October', 'November', 'December',
-        ];
-        return months[date.getMonth()];
-      }
-      case '%b': {
-        const monthsShort = [
-          'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-        ];
-        return monthsShort[date.getMonth()];
-      }
-      case '%A': {
-        const days = [
-          'Sunday', 'Monday', 'Tuesday', 'Wednesday',
-          'Thursday', 'Friday', 'Saturday',
-        ];
-        return days[date.getDay()];
-      }
-      case '%a': {
-        const daysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        return daysShort[date.getDay()];
-      }
-      case '%%':
-        return '%';
-      default:
-        return match;
-    }
   });
 }
