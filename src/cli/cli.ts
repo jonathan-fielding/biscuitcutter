@@ -360,10 +360,10 @@ program
   .option('-p, --project-dir <dir>', 'The project directory to update', '.')
   .option('-c, --checkout <checkout>', 'Branch, tag, or commit to update to')
   .option('--template-path <path>', 'Override the template path')
-  .option('--cookiecutter-input', 'Prompt for cookiecutter input during update', false)
-  .option('--refresh-private-variables', 'Refresh private variables from template', false)
-  .option('-y, --yes', 'Skip asking to apply changes', false)
-  .option('--skip-update', 'Skip applying update (just mark as updated)', false)
+  .option('-i, --biscuitcutter-input', 'Prompt for biscuitcutter input during update', false)
+  .option('-r, --refresh-private-variables', 'Refresh private variables from template', false)
+  .option('-y, --skip-apply-ask', 'Skip asking to apply changes', false)
+  .option('-s, --skip-update', 'Skip applying update (just mark as updated)', false)
   .option('--strict', 'Require exact commit match for up-to-date check', true)
   .option('--no-strict', 'Allow ancestry matching')
   .option('--allow-untracked-files', 'Allow untracked files in working directory', false)
@@ -380,7 +380,7 @@ program
         templatePath: opts.templatePath,
         biscuitcutterInput: opts.biscuitcutterInput,
         refreshPrivateVariables: opts.refreshPrivateVariables,
-        skipApplyAsk: opts.yes,
+        skipApplyAsk: opts.skipApplyAsk,
         skipUpdate: opts.skipUpdate,
         strict: opts.strict,
         allowUntrackedFiles: opts.allowUntrackedFiles,
