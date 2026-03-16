@@ -11,8 +11,7 @@ let polyfillsApplied = false;
  * Simple strftime implementation for common format codes.
  */
 function strftime(format: string, date: Date): string {
-  const pad = (n: number, width: number = 2): string =>
-    String(n).padStart(width, '0');
+  const pad = (n: number, width: number = 2): string => String(n).padStart(width, '0');
 
   return format.replace(/%[YmdHIMSpBbAa%]/g, (match) => {
     switch (match) {
@@ -82,17 +81,18 @@ export class NowExtension implements nunjucks.Extension {
     return new nodes.CallExtension(this, 'run', args, null);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   run(_context: any, ...args: any[]): string {
     // Filter out the callback function that Nunjucks adds
-    const filteredArgs = args.filter(arg => typeof arg !== 'function');
-    
+    const filteredArgs = args.filter((arg) => typeof arg !== 'function');
+
     // Default format
     let format = '%Y-%m-%d';
-    
+
     // Parse arguments: {% now 'utc', '%Y' %} or {% now '%Y' %}
     if (filteredArgs.length >= 2) {
       // timezone (ignored), format
-      format = filteredArgs[1];
+      [, format] = filteredArgs;
     } else if (filteredArgs.length === 1) {
       // Could be timezone or format
       const arg = filteredArgs[0];
@@ -101,7 +101,7 @@ export class NowExtension implements nunjucks.Extension {
       }
       // If it's just 'utc' or 'local', use default format
     }
-    
+
     return strftime(format, new Date());
   }
 }
@@ -166,65 +166,6 @@ function applyPythonStringPolyfills(): void {
   // We handle replace & split inside the env.renderString proxy wrapper safely!
 
   polyfillsApplied = true;
-}
-
-/**
- * Simple strftime implementation for common format codes.
- */
-function strftime(format: string, date: Date): string {
-  const pad = (n: number, width: number = 2): string => String(n).padStart(width, '0');
-
-  return format.replace(/%[YmdHIMSpBbAa%]/g, (match) => {
-    switch (match) {
-      case '%Y':
-        return String(date.getFullYear());
-      case '%m':
-        return pad(date.getMonth() + 1);
-      case '%d':
-        return pad(date.getDate());
-      case '%H':
-        return pad(date.getHours());
-      case '%I': {
-        const h = date.getHours() % 12;
-        return pad(h === 0 ? 12 : h);
-      }
-      case '%M':
-        return pad(date.getMinutes());
-      case '%S':
-        return pad(date.getSeconds());
-      case '%p':
-        return date.getHours() >= 12 ? 'PM' : 'AM';
-      case '%B': {
-        const months = [
-          'January', 'February', 'March', 'April', 'May', 'June',
-          'July', 'August', 'September', 'October', 'November', 'December',
-        ];
-        return months[date.getMonth()];
-      }
-      case '%b': {
-        const monthsShort = [
-          'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-        ];
-        return monthsShort[date.getMonth()];
-      }
-      case '%A': {
-        const days = [
-          'Sunday', 'Monday', 'Tuesday', 'Wednesday',
-          'Thursday', 'Friday', 'Saturday',
-        ];
-        return days[date.getDay()];
-      }
-      case '%a': {
-        const daysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        return daysShort[date.getDay()];
-      }
-      case '%%':
-        return '%';
-      default:
-        return match;
-    }
-  });
 }
 
 /**
