@@ -124,8 +124,7 @@ export async function clone(
       });
 
       if (checkout) {
-        const checkoutParams =
-          repoType === 'hg' ? ['--', checkout] : [checkout];
+        const checkoutParams = repoType === 'hg' ? ['--', checkout] : [checkout];
         execSync(`${repoType} checkout ${checkoutParams.join(' ')}`, {
           cwd: repoDir,
           stdio: 'pipe',

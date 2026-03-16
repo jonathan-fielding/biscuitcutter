@@ -45,10 +45,9 @@ describe('Exceptions', () => {
       { biscuitcutter: { foo: 'bar' } },
     );
 
-    const expectedStr =
-      'Beautiful is better than ugly. ' +
-      'Error message: Errors should never pass silently. ' +
-      'Context: {"biscuitcutter":{"foo":"bar"}}';
+    const expectedStr = 'Beautiful is better than ugly. '
+      + 'Error message: Errors should never pass silently. '
+      + 'Context: {"biscuitcutter":{"foo":"bar"}}';
 
     expect(undefinedVarError.toString()).toBe(expectedStr);
   });

@@ -1,7 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import {
+  describe, it, expect, beforeEach, afterEach, vi,
+} from 'vitest';
 import { check, update } from '../../src/core/tracking';
 import * as gitUtils from '../../src/utils/git';
 
@@ -39,7 +41,7 @@ describe('Tracking Commands - Template Abbreviations regression', () => {
         context: {},
         directory: null,
       }),
-      'utf-8'
+      'utf-8',
     );
 
     await check({ projectDir: tempDir });
@@ -49,7 +51,7 @@ describe('Tracking Commands - Template Abbreviations regression', () => {
       'https://github.com/myorg/myrepo.git',
       expect.any(String),
       null,
-      true
+      true,
     );
   });
 
@@ -64,16 +66,16 @@ describe('Tracking Commands - Template Abbreviations regression', () => {
         context: {},
         directory: null,
       }),
-      'utf-8'
+      'utf-8',
     );
 
     vi.mocked(gitUtils.isProjectUpdated).mockReturnValueOnce(false); // Force update to proceed
-    
+
     // We mock prompt to auto skip or return so update doesn't block
     vi.mock('inquirer', () => ({
       default: {
-        prompt: vi.fn().mockResolvedValue({ action: 's' }) 
-      }
+        prompt: vi.fn().mockResolvedValue({ action: 's' }),
+      },
     }));
 
     try {
@@ -86,7 +88,7 @@ describe('Tracking Commands - Template Abbreviations regression', () => {
     expect(gitUtils.cloneRepo).toHaveBeenCalledWith(
       'https://github.com/myorg/myrepo.git',
       expect.any(String),
-      null
+      null,
     );
   });
 });

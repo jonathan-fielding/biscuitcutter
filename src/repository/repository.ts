@@ -10,10 +10,10 @@ import { unzip } from './zipfile';
 
 const REPO_REGEX = new RegExp(
   // something like git:// ssh:// file:// etc.
-  '((((git|hg)\\+)?(git|ssh|file|https?):(//)?)' +
-    '|' +
+  '((((git|hg)\\+)?(git|ssh|file|https?):(//)?)'
+    + '|'
     // something like user@...
-    '(\\w+@[\\w.]+))',
+    + '(\\w+@[\\w.]+))',
 );
 
 /**
@@ -59,8 +59,8 @@ export function expandAbbreviations(
  */
 export function repositoryHasCookiecutterJson(repoDirectory: string): boolean {
   const dirExists = fs.existsSync(repoDirectory) && fs.statSync(repoDirectory).isDirectory();
-  const configExists = fs.existsSync(path.join(repoDirectory, 'biscuitcutter.json')) || 
-                       fs.existsSync(path.join(repoDirectory, 'cookiecutter.json'));
+  const configExists = fs.existsSync(path.join(repoDirectory, 'biscuitcutter.json'))
+                       || fs.existsSync(path.join(repoDirectory, 'cookiecutter.json'));
   return dirExists && configExists;
 }
 
@@ -83,24 +83,24 @@ export async function determineRepoDir(
   password?: string | null,
   directory?: string | null,
 ): Promise<[string, boolean]> {
-  template = expandAbbreviations(template, abbreviations);
+  const expandedTemplate = expandAbbreviations(template, abbreviations);
 
   let repositoryCandidates: string[];
   let cleanup: boolean;
 
-  if (isZipFile(template)) {
+  if (isZipFile(expandedTemplate)) {
     const unzippedDir = await unzip(
-      template,
-      isRepoUrl(template),
+      expandedTemplate,
+      isRepoUrl(expandedTemplate),
       cloneToDir,
       noInput,
       password,
     );
     repositoryCandidates = [unzippedDir];
     cleanup = true;
-  } else if (isRepoUrl(template)) {
+  } else if (isRepoUrl(expandedTemplate)) {
     const clonedRepo = await clone(
-      template,
+      expandedTemplate,
       checkout,
       cloneToDir,
       noInput,
@@ -108,14 +108,12 @@ export async function determineRepoDir(
     repositoryCandidates = [clonedRepo];
     cleanup = false;
   } else {
-    repositoryCandidates = [template, path.join(cloneToDir, template)];
+    repositoryCandidates = [expandedTemplate, path.join(cloneToDir, expandedTemplate)];
     cleanup = false;
   }
 
   if (directory) {
-    repositoryCandidates = repositoryCandidates.map((s) =>
-      path.join(s, directory),
-    );
+    repositoryCandidates = repositoryCandidates.map((s) => path.join(s, directory));
   }
 
   for (const repoCandidate of repositoryCandidates) {
@@ -125,7 +123,7 @@ export async function determineRepoDir(
   }
 
   throw new RepositoryNotFoundError(
-    `A valid repository for "${template}" could not be found in the following ` +
-      `locations:\n${repositoryCandidates.join('\n')}`,
+    `A valid repository for "${expandedTemplate}" could not be found in the following `
+      + `locations:\n${repositoryCandidates.join('\n')}`,
   );
 }

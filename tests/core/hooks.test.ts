@@ -1,7 +1,9 @@
 /**
  * Tests for BiscuitCutter hooks module.
  */
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import {
+  describe, it, expect, beforeEach, afterEach,
+} from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';

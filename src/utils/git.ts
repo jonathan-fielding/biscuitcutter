@@ -273,8 +273,8 @@ export function getDiff(oldDir: string, newDir: string): string {
     }
 
     diff = diff
-      .replace(new RegExp(escapeRegExp(oldDirResolved + '/'), 'g'), '')
-      .replace(new RegExp(escapeRegExp(newDirResolved + '/'), 'g'), '');
+      .replace(new RegExp(escapeRegExp(`${oldDirResolved}/`), 'g'), '')
+      .replace(new RegExp(escapeRegExp(`${newDirResolved}/`), 'g'), '');
 
     return diff;
   } catch (err: any) {
@@ -369,10 +369,9 @@ export function applyPatchWithRejections(diff: string, targetDir: string): Patch
       return { success: true, message: '' };
     }
 
-    const message =
-      result.stderr ||
-      'Project directory may have *.rej files reflecting merge conflicts. ' +
-        'Please resolve those conflicts manually.';
+    const message = result.stderr
+      || 'Project directory may have *.rej files reflecting merge conflicts. '
+        + 'Please resolve those conflicts manually.';
 
     return { success: true, message };
   } catch (err: any) {

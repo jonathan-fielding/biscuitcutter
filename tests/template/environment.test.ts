@@ -60,7 +60,7 @@ describe('Environment', () => {
     const env = createStrictEnvironment();
     const result = env.renderString(
       '{{ "HELLO world".lower().replace(" ", "_") }}',
-      {}
+      {},
     );
     expect(result).toBe('hello_world');
   });
@@ -69,7 +69,7 @@ describe('Environment', () => {
     const env = createStrictEnvironment();
     const result = env.renderString(
       '{{ cookiecutter.project_name.split(" ") | map("first") | join("") | lower }}',
-      { cookiecutter: { project_name: "My Awesome Project" } }
+      { cookiecutter: { project_name: 'My Awesome Project' } },
     );
     expect(result).toBe('map');
   });
@@ -85,7 +85,7 @@ describe('Environment', () => {
 
   it('should support Jinja2 raw tags with whitespace strip modifiers', () => {
     const env = createStrictEnvironment();
-    // Nunjucks doesn't natively support {% raw -%} or {% endraw -%} modifier strips. 
+    // Nunjucks doesn't natively support {% raw -%} or {% endraw -%} modifier strips.
     // We expect it to be parsed correctly without crashing.
     const result = env.renderString('{%- raw -%} {{ dont_evaluate_this }} {%- endraw -%}', {});
     expect(result).toBe(' {{ dont_evaluate_this }} ');

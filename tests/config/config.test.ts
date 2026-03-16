@@ -1,16 +1,16 @@
 /**
  * Tests for BiscuitCutter config module.
  */
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import {
+  describe, it, expect,
+} from 'vitest';
 import * as path from 'path';
-import * as fs from 'fs';
 import * as os from 'os';
 import {
   mergeConfigs,
   getConfig,
   getUserConfig,
   DEFAULT_CONFIG,
-  USER_CONFIG_PATH,
 } from '../../src/config/config';
 import {
   ConfigDoesNotExistError,
@@ -98,8 +98,8 @@ describe('getConfig', () => {
   });
 
   it('should expand environment variables in paths', () => {
-    const originalEnv = process.env['COOKIES'];
-    process.env['COOKIES'] = '/tmp/cookies';
+    const originalEnv = process.env.COOKIES;
+    process.env.COOKIES = '/tmp/cookies';
     try {
       const configPath = path.join(FIXTURES_DIR, 'config-expand-vars.yaml');
       const config = getConfig(configPath);
@@ -107,9 +107,9 @@ describe('getConfig', () => {
       expect(config.replay_dir).toBe('/tmp/cookies/replay-files');
     } finally {
       if (originalEnv === undefined) {
-        delete process.env['COOKIES'];
+        delete process.env.COOKIES;
       } else {
-        process.env['COOKIES'] = originalEnv;
+        process.env.COOKIES = originalEnv;
       }
     }
   });
@@ -145,16 +145,16 @@ describe('getUserConfig', () => {
 
   it('should use BISCUITCUTTER_CONFIG env var', () => {
     const configPath = path.join(FIXTURES_DIR, 'valid-config.yaml');
-    const originalEnv = process.env['BISCUITCUTTER_CONFIG'];
-    process.env['BISCUITCUTTER_CONFIG'] = configPath;
+    const originalEnv = process.env.BISCUITCUTTER_CONFIG;
+    process.env.BISCUITCUTTER_CONFIG = configPath;
     try {
       const config = getUserConfig();
       expect(config.default_context.full_name).toBe('Firstname Lastname');
     } finally {
       if (originalEnv === undefined) {
-        delete process.env['BISCUITCUTTER_CONFIG'];
+        delete process.env.BISCUITCUTTER_CONFIG;
       } else {
-        process.env['BISCUITCUTTER_CONFIG'] = originalEnv;
+        process.env.BISCUITCUTTER_CONFIG = originalEnv;
       }
     }
   });

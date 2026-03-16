@@ -12,12 +12,16 @@ export { dump as replayDump, load as replayLoad } from './core/replay';
 export { findTemplate } from './core/find';
 
 // Repository handling
-export { determineRepoDir, isRepoUrl, isZipFile, expandAbbreviations } from './repository/repository';
+export {
+  determineRepoDir, isRepoUrl, isZipFile, expandAbbreviations,
+} from './repository/repository';
 export { clone, identifyRepo, isVcsInstalled } from './repository/vcs';
 export { unzip } from './repository/zipfile';
 
 // Configuration
-export { getUserConfig, getConfig, mergeConfigs, BiscuitCutterConfig } from './config/config';
+export {
+  getUserConfig, getConfig, mergeConfigs, BiscuitCutterConfig,
+} from './config/config';
 
 // Template engine
 export { createStrictEnvironment } from './template/environment';
@@ -97,4 +101,3 @@ export {
   applyPatch,
   isProjectUpdated,
 } from './utils/git';
-

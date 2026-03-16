@@ -38,7 +38,6 @@ function versionMsg(): string {
   return `BiscuitCutter ${VERSION} from ${location} (Node.js ${process.version})`;
 }
 
-
 function listInstalledTemplates(
   defaultConfig: boolean,
   passedConfigFile?: string | null,
@@ -55,13 +54,11 @@ function listInstalledTemplates(
 
   const templateNames = fs
     .readdirSync(biscuitcutterFolder)
-    .filter((folder) =>
-      fs.existsSync(
-        path.join(biscuitcutterFolder, folder, 'biscuitcutter.json'),
-      ) || fs.existsSync(
-        path.join(biscuitcutterFolder, folder, 'biscuitcutter.json (or cookiecutter.json)'),
-      ),
-    );
+    .filter((folder) => fs.existsSync(
+      path.join(biscuitcutterFolder, folder, 'biscuitcutter.json'),
+    ) || fs.existsSync(
+      path.join(biscuitcutterFolder, folder, 'biscuitcutter.json (or cookiecutter.json)'),
+    ));
 
   console.log(`${templateNames.length} installed templates: `);
   for (const name of templateNames) {
@@ -74,8 +71,8 @@ const program = new Command();
 program
   .name('biscuitcutter')
   .description(
-    'Create a project from a BiscuitCutter project template (TEMPLATE).\n\n' +
-      'BiscuitCutter is a port of the popular Cookiecutter tool to TypeScript.',
+    'Create a project from a BiscuitCutter project template (TEMPLATE).\n\n'
+      + 'BiscuitCutter is a port of the popular Cookiecutter tool to TypeScript.',
   )
   .version(versionMsg(), '-V, --version')
   .argument('[template]', 'Template directory or repository URL')
@@ -196,7 +193,7 @@ program
       acceptHooks = opts.acceptHooks === 'yes';
     }
 
-    let replay: boolean | string = opts.replay;
+    let { replay } = opts;
     if (opts.replayFile) {
       replay = opts.replayFile;
     }
@@ -212,7 +209,7 @@ program
         outputDir: opts.outputDir,
         configFile: opts.configFile,
         defaultConfig: opts.defaultConfig,
-        password: process.env['BISCUITCUTTER_REPO_PASSWORD'],
+        password: process.env.BISCUITCUTTER_REPO_PASSWORD,
         directory: opts.directory,
         skipIfFileExists: opts.skipIfFileExists,
         acceptHooks,
@@ -220,15 +217,15 @@ program
       });
     } catch (e: any) {
       if (
-        e instanceof ContextDecodingError ||
-        e instanceof OutputDirExistsError ||
-        e instanceof EmptyDirNameError ||
-        e instanceof InvalidModeError ||
-        e instanceof FailedHookError ||
-        e instanceof UnknownExtensionError ||
-        e instanceof InvalidZipRepositoryError ||
-        e instanceof RepositoryNotFoundError ||
-        e instanceof RepositoryCloneFailedError
+        e instanceof ContextDecodingError
+        || e instanceof OutputDirExistsError
+        || e instanceof EmptyDirNameError
+        || e instanceof InvalidModeError
+        || e instanceof FailedHookError
+        || e instanceof UnknownExtensionError
+        || e instanceof InvalidZipRepositoryError
+        || e instanceof RepositoryNotFoundError
+        || e instanceof RepositoryCloneFailedError
       ) {
         console.error(e.message);
         process.exit(1);
@@ -254,11 +251,11 @@ program
  */
 function handleTrackingError(e: any): void {
   if (
-    e instanceof TemplateStateNotFoundError ||
-    e instanceof TemplateStateExistsError ||
-    e instanceof DirtyGitRepositoryError ||
-    e instanceof RepositoryNotFoundError ||
-    e instanceof RepositoryCloneFailedError
+    e instanceof TemplateStateNotFoundError
+    || e instanceof TemplateStateExistsError
+    || e instanceof DirtyGitRepositoryError
+    || e instanceof RepositoryNotFoundError
+    || e instanceof RepositoryCloneFailedError
   ) {
     console.error(e.message);
     process.exit(1);

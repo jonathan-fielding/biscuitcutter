@@ -28,6 +28,21 @@ export interface EnvironmentOptions {
 }
 
 /**
+ * Read extensions from the context's cookiecutter._extensions key.
+ */
+function readExtensions(ctx: Record<string, any>): string[] {
+  try {
+    const extensions = ctx.biscuitcutter?._extensions;
+    if (Array.isArray(extensions)) {
+      return extensions.map(String);
+    }
+    return [];
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Create a Nunjucks environment with extensions loaded from the context.
  *
  * 1. Registers default extensions (jsonify, slugify, uuid, time, randomString).
@@ -74,10 +89,12 @@ export function createStrictEnvironment(options: EnvironmentOptions = {}): nunju
 
   // Wrap renderString to safely polyfill Python's global `.replace()` and zero-arg `.split()`
   const originalRenderString = env.renderString.bind(env);
-  env.renderString = function (str: string, context?: any) {
+  env.renderString = function (templateStr: string, renderContext?: any) {
     // Nunjucks doesn't natively support modifier dashes on `raw` blocks (e.g. `{%- raw -%}` or `{% endraw -%}`)
     // This strips out any surrounding modifier combinations so it acts as standard block tags to prevent crash.
-    str = str.replace(/{%-?\s*raw\s*-?%}/g, '{% raw %}').replace(/{%-?\s*endraw\s*-?%}/g, '{% endraw %}');
+    const normalizedStr = templateStr
+      .replace(/{%-?\s*raw\s*-?%}/g, '{% raw %}')
+      .replace(/{%-?\s*endraw\s*-?%}/g, '{% endraw %}');
 
     const originalReplace = String.prototype.replace;
     const originalSplit = String.prototype.split;
@@ -97,7 +114,7 @@ export function createStrictEnvironment(options: EnvironmentOptions = {}): nunju
         return originalSplit.call(this, separator as any, limit);
       };
 
-      return originalRenderString(str, context);
+      return originalRenderString(normalizedStr, renderContext);
     } finally {
       (String.prototype as any).replace = originalReplace;
       (String.prototype as any).split = originalSplit;
@@ -105,21 +122,6 @@ export function createStrictEnvironment(options: EnvironmentOptions = {}): nunju
   } as any;
 
   return env;
-}
-
-/**
- * Read extensions from the context's cookiecutter._extensions key.
- */
-function readExtensions(context: Record<string, any>): string[] {
-  try {
-    const extensions = context.biscuitcutter?._extensions;
-    if (Array.isArray(extensions)) {
-      return extensions.map(String);
-    }
-    return [];
-  } catch {
-    return [];
-  }
 }
 
 /**

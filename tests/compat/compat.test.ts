@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import {
+  describe, it, expect, beforeEach, afterEach,
+} from 'vitest';
 import * as path from 'path';
 import * as fs from 'fs';
 import os from 'os';
@@ -18,9 +20,9 @@ describe('Cookiecutter Backward Compatibility', () => {
   });
 
   it('should successfully generate a template mapped from cookiecutter.json and using cookiecutter jinja tags', async () => {
-    const resultDir = await biscuitcutter({
+    await biscuitcutter({
       template: fixtureDir,
-      outputDir: outputDir,
+      outputDir,
       noInput: true,
     });
 
