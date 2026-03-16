@@ -1,5 +1,12 @@
 # biscuitcutter
 
+## 0.0.6
+
+### Patch Changes
+
+- 4588841: fix: command line args not compatible with cruft
+- 0d2fb1f: fix the now() extension
+
 ## 0.0.5
 
 ### Patch Changes
