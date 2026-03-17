@@ -24,29 +24,6 @@ export class NonTemplatedInputDirError extends BiscuitCutterError {
 }
 
 /**
- * Exception for ambiguous project template directory.
- * Raised when BiscuitCutter cannot determine which directory is the project
- * template, e.g. more than one dir appears to be a template dir.
- */
-export class UnknownTemplateDirError extends BiscuitCutterError {
-  constructor(message?: string) {
-    super(message);
-    this.name = 'UnknownTemplateDirError';
-  }
-}
-
-/**
- * Exception for missing generated project directory.
- * Raised during cleanup when a generated project directory can't be found.
- */
-export class MissingProjectDirError extends BiscuitCutterError {
-  constructor(message?: string) {
-    super(message);
-    this.name = 'MissingProjectDirError';
-  }
-}
-
-/**
  * Exception for missing config file.
  * Raised when getConfig() is passed a path to a config file, but no file
  * is found at that path.

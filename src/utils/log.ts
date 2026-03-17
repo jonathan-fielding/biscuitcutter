@@ -22,60 +22,36 @@ export interface Logger {
 let currentLevel: LogLevel = 'INFO';
 let debugFileStream: import('fs').WriteStream | null = null;
 
-function formatMessage(level: string, name: string, message: string, args: any[]): string {
+type ConsoleFn = 'log' | 'warn' | 'error';
+
+const LEVELS: Array<{ level: LogLevel; label: string; consoleFn: ConsoleFn }> = [
+  { level: 'DEBUG', label: 'DEBUG', consoleFn: 'log' },
+  { level: 'INFO', label: 'INFO', consoleFn: 'log' },
+  { level: 'WARNING', label: 'WARNING', consoleFn: 'warn' },
+  { level: 'ERROR', label: 'ERROR', consoleFn: 'error' },
+];
+
+function formatMessage(label: string, name: string, message: string, args: any[]): string {
   let formatted = message;
   for (const arg of args) {
     formatted = formatted.replace(/%[sdifoO]/, String(arg));
   }
-  if (currentLevel === 'DEBUG') {
-    return `${level} ${name}: ${formatted}`;
-  }
-  return `${level}: ${formatted}`;
+  return currentLevel === 'DEBUG' ? `${label} ${name}: ${formatted}` : `${label}: ${formatted}`;
 }
 
-function shouldLog(level: LogLevel): boolean {
-  return LOG_LEVEL_PRIORITY[level] >= LOG_LEVEL_PRIORITY[currentLevel];
+function emit(level: LogLevel, label: string, name: string, consoleFn: ConsoleFn, message: string, args: any[]): void {
+  const formatted = formatMessage(label, name, message, args);
+  debugFileStream?.write(`${formatted}\n`);
+  if (LOG_LEVEL_PRIORITY[level] >= LOG_LEVEL_PRIORITY[currentLevel]) {
+    console[consoleFn](formatted);
+  }
 }
 
 export function getLogger(name: string): Logger {
-  return {
-    debug(message: string, ...args: any[]) {
-      const formatted = formatMessage('DEBUG', name, message, args);
-      if (debugFileStream) {
-        debugFileStream.write(`${formatted}\n`);
-      }
-      if (shouldLog('DEBUG')) {
-        console.log(formatted);
-      }
-    },
-    info(message: string, ...args: any[]) {
-      const formatted = formatMessage('INFO', name, message, args);
-      if (debugFileStream) {
-        debugFileStream.write(`${formatted}\n`);
-      }
-      if (shouldLog('INFO')) {
-        console.log(formatted);
-      }
-    },
-    warn(message: string, ...args: any[]) {
-      const formatted = formatMessage('WARNING', name, message, args);
-      if (debugFileStream) {
-        debugFileStream.write(`${formatted}\n`);
-      }
-      if (shouldLog('WARNING')) {
-        console.warn(formatted);
-      }
-    },
-    error(message: string, ...args: any[]) {
-      const formatted = formatMessage('ERROR', name, message, args);
-      if (debugFileStream) {
-        debugFileStream.write(`${formatted}\n`);
-      }
-      if (shouldLog('ERROR')) {
-        console.error(formatted);
-      }
-    },
-  };
+  const [debug, info, warn, error] = LEVELS.map(
+    ({ level, label, consoleFn }) => (message: string, ...args: any[]) => emit(level, label, name, consoleFn, message, args),
+  );
+  return { debug, info, warn, error };
 }
 
 /**

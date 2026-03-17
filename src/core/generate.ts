@@ -17,7 +17,7 @@ import {
 import { findTemplate } from './find';
 import { runHookFromRepoDir } from './hooks';
 import { processYesNoResponse } from './prompt';
-import { createStrictEnvironment } from '../template/environment';
+import { createStrictEnvironment } from '../templating';
 import {
   createEnvWithContext,
   makeSurePathExists,

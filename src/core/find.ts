@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { getLogger } from '../utils/log';
 import { NonTemplatedInputDirError } from '../utils/exceptions';
-import { VARIABLE_START_STRING, VARIABLE_END_STRING } from '../template/environment';
+import { VARIABLE_START_STRING, VARIABLE_END_STRING } from '../templating';
 
 const logger = getLogger('biscuitcutter.find');
 

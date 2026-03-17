@@ -13,7 +13,7 @@ import {
   processYesNoResponse,
   readUserVariable,
 } from '../../src/core/prompt';
-import { createStrictEnvironment } from '../../src/template/environment';
+import { createStrictEnvironment } from '../../src/templating';
 import { UndefinedVariableInTemplateError } from '../../src/utils/exceptions';
 
 // Need these imports at top level for promptAndDelete tests

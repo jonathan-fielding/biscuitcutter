@@ -14,7 +14,7 @@ import {
   UndefinedVariableInTemplateError,
   EmptyDirNameError,
 } from '../../src/utils/exceptions';
-import { createStrictEnvironment } from '../../src/template/environment';
+import { createStrictEnvironment } from '../../src/templating';
 
 const FIXTURES_DIR = path.join(__dirname, '../_fixtures');
 

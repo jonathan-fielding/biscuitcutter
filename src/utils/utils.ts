@@ -8,7 +8,7 @@ import * as os from 'os';
 import * as fsExtra from 'fs-extra';
 import * as nunjucks from 'nunjucks';
 import { getLogger } from './log';
-import { createStrictEnvironment } from '../template/environment';
+import { createStrictEnvironment } from '../templating';
 
 const logger = getLogger('biscuitcutter.utils');
 
@@ -47,21 +47,6 @@ export function workIn<T>(dirname: string | null, fn: () => T): T {
 }
 
 /**
- * Async version of workIn.
- */
-export async function workInAsync<T>(dirname: string | null, fn: () => Promise<T>): Promise<T> {
-  const curdir = process.cwd();
-  try {
-    if (dirname !== null) {
-      process.chdir(dirname);
-    }
-    return await fn();
-  } finally {
-    process.chdir(curdir);
-  }
-}
-
-/**
  * Make `scriptPath` executable.
  */
 export function makeExecutable(scriptPath: string): void {
@@ -89,14 +74,4 @@ export function createEnvWithContext(context: Record<string, any>): nunjucks.Env
   return createStrictEnvironment({ context, ...envVars });
 }
 
-/**
- * Force delete handler — removes read-only attributes and deletes.
- */
-export function forceDelete(filePath: string): void {
-  try {
-    fs.chmodSync(filePath, 0o666);
-    fs.unlinkSync(filePath);
-  } catch {
-    // Ignore errors during force delete
-  }
-}
+
