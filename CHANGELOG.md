@@ -1,5 +1,12 @@
 # biscuitcutter
 
+## 0.0.8
+
+### Patch Changes
+
+- 2441cc4: refactoring
+- 20d34de: fix when biscuitcutter exits
+
 ## 0.0.7
 
 ### Patch Changes
