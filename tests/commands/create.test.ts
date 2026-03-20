@@ -31,9 +31,7 @@ vi.mock('../../src/utils/git', async (importOriginal) => {
     getLatestCommit: vi.fn().mockReturnValue('abc123def456'),
     isGitRepo: vi.fn().mockReturnValue(true),
     isRepoClean: vi.fn().mockReturnValue(true),
-    createTempDir: vi.fn((prefix: string) => {
-      return fs.mkdtempSync(path.join(os.tmpdir(), prefix));
-    }),
+    createTempDir: vi.fn((prefix: string) => fs.mkdtempSync(path.join(os.tmpdir(), prefix))),
   };
 });
 

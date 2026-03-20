@@ -40,9 +40,7 @@ vi.mock('../../src/utils/git', async (importOriginal) => {
     displayDiff: vi.fn(),
     applyPatch: vi.fn().mockReturnValue({ success: true, message: '' }),
     resetToCommit: vi.fn(),
-    createTempDir: vi.fn((prefix: string) => {
-      return fs.mkdtempSync(path.join(os.tmpdir(), prefix));
-    }),
+    createTempDir: vi.fn((prefix: string) => fs.mkdtempSync(path.join(os.tmpdir(), prefix))),
   };
 });
 

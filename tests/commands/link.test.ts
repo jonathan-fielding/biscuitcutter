@@ -12,7 +12,7 @@ import {
   describe, it, expect, beforeEach, afterEach, vi,
 } from 'vitest';
 import {
-  link, readTemplateState, STATE_FILE, TemplateState,
+  link, readTemplateState, STATE_FILE,
 } from '../../src/core/tracking';
 import { TemplateStateExistsError } from '../../src/utils/exceptions';
 
@@ -29,9 +29,7 @@ vi.mock('../../src/utils/git', async (importOriginal) => {
     }),
     getLatestCommit: vi.fn().mockReturnValue('link-commit-hash'),
     isGitRepo: vi.fn().mockReturnValue(true),
-    createTempDir: vi.fn((prefix: string) => {
-      return fs.mkdtempSync(path.join(os.tmpdir(), prefix));
-    }),
+    createTempDir: vi.fn((prefix: string) => fs.mkdtempSync(path.join(os.tmpdir(), prefix))),
   };
 });
 
