@@ -330,7 +330,7 @@ interface GenerateTemplateOptions {
   updateDeletedPaths?: boolean;
 }
 
-function generateTemplateForDiff(options: GenerateTemplateOptions): Record<string, any> {
+async function generateTemplateForDiff(options: GenerateTemplateOptions): Promise<Record<string, any>> {
   const {
     outputDir,
     repoDir,
@@ -364,6 +364,10 @@ function generateTemplateForDiff(options: GenerateTemplateOptions): Record<strin
   const newContext = generateContext(contextFile, null, extraContext);
   newContext.biscuitcutter._template = templateState.template;
   newContext.biscuitcutter._commit = targetCommit;
+
+  // Flatten choice arrays to selected values (matching Python cruft behavior)
+  const flatContext = await promptForConfig(newContext, true);
+  newContext.biscuitcutter = flatContext;
 
   fs.mkdirSync(outputDir, { recursive: true });
 
@@ -682,7 +686,7 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
     const workingState: TemplateState = JSON.parse(JSON.stringify(templateState));
 
     fs.mkdirSync(currentTemplateDir, { recursive: true });
-    generateTemplateForDiff({
+    await generateTemplateForDiff({
       outputDir: currentTemplateDir,
       repoDir,
       templateState: workingState,
@@ -701,7 +705,7 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
     }
 
     fs.mkdirSync(newTemplateDir, { recursive: true });
-    const newContext = generateTemplateForDiff({
+    const newContext = await generateTemplateForDiff({
       outputDir: newTemplateDir,
       repoDir,
       templateState: workingState,
@@ -735,7 +739,7 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
 
     workingState.commit = latestCommit;
     workingState.checkout = checkout;
-    // Filter out private variables (they're machine-specific)
+    // Use flattened context from new template (choice arrays resolved to selected values)
     const filteredContext: Record<string, any> = {};
     for (const [key, value] of Object.entries(newContext.biscuitcutter)) {
       if (!key.startsWith('_')) {
@@ -743,7 +747,9 @@ export async function update(options: UpdateOptions = {}): Promise<UpdateResult>
       }
     }
     workingState.context = filteredContext;
-    workingState.template = templateGitUrl;
+    if (templatePath) {
+      workingState.template = templateGitUrl;
+    }
 
     writeTemplateState(projectDir, workingState);
 
@@ -781,7 +787,7 @@ export async function diff(options: DiffOptions = {}): Promise<DiffResult> {
     logger.debug('Cloning template from %s', resolvedUrl);
     cloneRepo(resolvedUrl, repoDir, effectiveCheckout);
 
-    generateTemplateForDiff({
+    await generateTemplateForDiff({
       outputDir: remoteTemplateDir,
       repoDir,
       templateState,

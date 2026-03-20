@@ -24,7 +24,7 @@ export {
 } from './config/config';
 
 // Template engine
-export { createStrictEnvironment } from './template/environment';
+export { createStrictEnvironment } from './templating';
 
 // Utilities
 export { configureLogger, getLogger } from './utils/log';
@@ -39,8 +39,6 @@ export {
 export {
   BiscuitCutterError,
   NonTemplatedInputDirError,
-  UnknownTemplateDirError,
-  MissingProjectDirError,
   ConfigDoesNotExistError,
   InvalidConfigurationError,
   UnknownRepoTypeError,

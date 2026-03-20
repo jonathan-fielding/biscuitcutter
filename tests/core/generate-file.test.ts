@@ -7,7 +7,7 @@ import {
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { createStrictEnvironment } from '../../src/template/environment';
+import { createStrictEnvironment } from '../../src/templating';
 import { generateFile, isCopyOnlyPath } from '../../src/core/generate';
 
 describe('isCopyOnlyPath', () => {

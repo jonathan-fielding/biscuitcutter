@@ -2,10 +2,10 @@
   "name": "biscuitcutter",
   "version": "0.0.7",
   "description": "A command-line utility that creates projects from project templates, e.g. creating a TypeScript package project from a project template.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "bin": {
-    "biscuitcutter": "dist/cli/cli.js"
+    "biscuitcutter": "dist/src/cli/cli.js"
   },
   "files": [
     "dist",
@@ -13,8 +13,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/cli/cli.js",
+    "build": "tsc && rm -rf dist/tests",
+    "start": "node dist/src/cli/cli.js",
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",

@@ -2,7 +2,7 @@
  * Tests for BiscuitCutter environment module.
  */
 import { describe, it, expect } from 'vitest';
-import { createStrictEnvironment } from '../../src/template/environment';
+import { createStrictEnvironment } from '../../src/templating';
 
 describe('Environment', () => {
   it('should create a strict nunjucks environment', () => {
