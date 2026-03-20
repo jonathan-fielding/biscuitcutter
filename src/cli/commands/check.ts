@@ -24,10 +24,11 @@ export function registerCheckCommand(program: Command): void {
 
         if (result.upToDate) {
           logSuccess(`SUCCESS: ${result.message}`);
+          process.exit(0);
         } else {
           logWarning(`WARNING: ${result.message}`);
+          process.exit(1);
         }
-        process.exit(0);
       } catch (e: any) {
         handleTrackingError(e);
       }
