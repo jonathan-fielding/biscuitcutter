@@ -73,5 +73,3 @@ export function createEnvWithContext(context: Record<string, any>): nunjucks.Env
   const envVars = context.biscuitcutter?._jinja2_env_vars || {};
   return createStrictEnvironment({ context, ...envVars });
 }
-
-

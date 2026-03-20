@@ -1,7 +1,9 @@
 import { Command } from 'commander';
 import { configureLogger } from '../../utils/log';
 import { update } from '../../core/tracking';
-import { handleTrackingError, logSuccess, logError, parseExtraContext } from './helpers';
+import {
+  handleTrackingError, logSuccess, logError, parseExtraContext,
+} from './helpers';
 
 export function registerUpdateCommand(program: Command): void {
   program

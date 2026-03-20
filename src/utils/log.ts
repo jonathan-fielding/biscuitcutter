@@ -48,10 +48,13 @@ function emit(level: LogLevel, label: string, name: string, consoleFn: ConsoleFn
 }
 
 export function getLogger(name: string): Logger {
-  const [debug, info, warn, error] = LEVELS.map(
-    ({ level, label, consoleFn }) => (message: string, ...args: any[]) => emit(level, label, name, consoleFn, message, args),
+  const createLogFn = ({ level, label, consoleFn }: typeof LEVELS[number]) => (
+    (message: string, ...args: any[]) => emit(level, label, name, consoleFn, message, args)
   );
-  return { debug, info, warn, error };
+  const [debug, info, warn, error] = LEVELS.map(createLogFn);
+  return {
+    debug, info, warn, error,
+  };
 }
 
 /**
