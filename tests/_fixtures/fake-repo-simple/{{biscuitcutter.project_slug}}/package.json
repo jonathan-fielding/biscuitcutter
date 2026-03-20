@@ -1,0 +1,4 @@
+{
+  "name": "{{ biscuitcutter.project_slug }}",
+  "version": "{{ biscuitcutter.version }}"
+}
